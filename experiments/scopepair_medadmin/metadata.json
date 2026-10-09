@@ -1,0 +1,30 @@
+{
+  "MimicMedicationAdministration.ndjson.gz": 32454,
+  "MimicMedicationAdministrationICU.ndjson.gz": 20373,
+  "benchmark": "ScopePair-MedAdmin",
+  "dev_cases": 16,
+  "dose_variation_cases": 80,
+  "eligible_patients": 89,
+  "n_cases": 80,
+  "n_tasks": 160,
+  "oracle_version": "scopepair-medadmin-oracle-v1",
+  "patient_ids_exported": false,
+  "protocol_version": "1.0",
+  "seed": 2027,
+  "source_files": [
+    "MimicMedicationAdministration.ndjson.gz",
+    "MimicMedicationAdministrationICU.ndjson.gz",
+    "MimicMedication.ndjson.gz"
+  ],
+  "source_sha256": {
+    "MimicMedication.ndjson.gz": "dd9373fb1fd55d66696f23753225f7b442de849cdd4c10f87a51804f14148d6a",
+    "MimicMedicationAdministration.ndjson.gz": "79c5e5a25c307a23883b6fadc6fcd2b082f7e1e1a2244ffcbce2fd7436a207c9",
+    "MimicMedicationAdministrationICU.ndjson.gz": "e42c8a36d5b4f55d00fd2e6cebbb5bd510536efd44343fc25ab0fc7dc622a301"
+  },
+  "task_manifest_sha256": "764e69058410f1fc8c8fd76fb2ccf49b837eb4ee610aca71de826d1e1bc8c870",
+  "test_cases": 64,
+  "valid_administrations": 52827,
+  "source_url": "https://physionet.org/content/mimic-iv-fhir-demo/2.1.0/",
+  "data_license": "ODbL-1.0",
+  "license_url": "https://opendatacommons.org/licenses/odbl/1-0/"
+}

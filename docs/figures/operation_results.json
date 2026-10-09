@@ -1,0 +1,473 @@
+{
+  "metric": "Exact structured answer correctness and no out-of-contract citations",
+  "uncertainty": "95% patient-cluster bootstrap intervals from frozen summary CSVs",
+  "scope": "Separate ScopePair diagnostic tests; not pooled into ScopeBench tier totals",
+  "full_result": "Final verified protocol output, including deterministic fallback",
+  "palette": {
+    "ink": "#23272B",
+    "secondary": "#626C76",
+    "rule": "#DEE2E6",
+    "neutral": "#E7EAEE",
+    "baseline_fill": "#C2C8D0",
+    "scope": "#004488",
+    "scope_fill": "#91AECD",
+    "scope_panel": "#D6E3F1",
+    "audit": "#55616D",
+    "valid": "#004488",
+    "valid_fill": "#EEF3F8",
+    "invalid": "#994455"
+  },
+  "sources": [
+    {
+      "path": "results/scopepair/labtrend/summary.csv",
+      "sha256": "abf2bf531c0376d7a30d7ddfcc50a92464b860012bcb11feb288e39e3678e242"
+    },
+    {
+      "path": "results/scopepair/meddose/summary.csv",
+      "sha256": "26643e76419c805d2b6a0ea5d98a5173486c674fa953cf2d6745b8357da6197c"
+    }
+  ],
+  "generator_sha256": "98c5b269cb2009f58f23d9ea6b854cc1ad91d004047af770c8cb44351a4aebce",
+  "values": [
+    {
+      "family": "LabTrend",
+      "model": "Qwen3-4B",
+      "system": "prompt_only_all6",
+      "label": "All-six prompt",
+      "mean_pct": 30.46875,
+      "ci_low_pct": 24.21875,
+      "ci_high_pct": 35.9375,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Phi-4-14B",
+      "system": "prompt_only_all6",
+      "label": "All-six prompt",
+      "mean_pct": 56.25,
+      "ci_low_pct": 46.875,
+      "ci_high_pct": 64.84375,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Gemma-3-27B",
+      "system": "prompt_only_all6",
+      "label": "All-six prompt",
+      "mean_pct": 43.75,
+      "ci_low_pct": 35.9375,
+      "ci_high_pct": 51.5625,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "MedGemma-27B",
+      "system": "prompt_only_all6",
+      "label": "All-six prompt",
+      "mean_pct": 32.03125,
+      "ci_low_pct": 23.4375,
+      "ci_high_pct": 40.625,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Qwen3-30B",
+      "system": "prompt_only_all6",
+      "label": "All-six prompt",
+      "mean_pct": 70.3125,
+      "ci_low_pct": 63.28125,
+      "ci_high_pct": 77.34375,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Qwen3-4B",
+      "system": "scope_first",
+      "label": "Scope-first",
+      "mean_pct": 65.625,
+      "ci_low_pct": 57.03125,
+      "ci_high_pct": 73.4375,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Phi-4-14B",
+      "system": "scope_first",
+      "label": "Scope-first",
+      "mean_pct": 78.90625,
+      "ci_low_pct": 71.875,
+      "ci_high_pct": 85.9375,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Gemma-3-27B",
+      "system": "scope_first",
+      "label": "Scope-first",
+      "mean_pct": 56.25,
+      "ci_low_pct": 47.65625,
+      "ci_high_pct": 64.84375,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "MedGemma-27B",
+      "system": "scope_first",
+      "label": "Scope-first",
+      "mean_pct": 45.3125,
+      "ci_low_pct": 36.71875,
+      "ci_high_pct": 53.90625,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Qwen3-30B",
+      "system": "scope_first",
+      "label": "Scope-first",
+      "mean_pct": 87.5,
+      "ci_low_pct": 81.25,
+      "ci_high_pct": 92.96875,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Qwen3-4B",
+      "system": "guard_refill",
+      "label": "Guard-refill",
+      "mean_pct": 67.96875,
+      "ci_low_pct": 59.375,
+      "ci_high_pct": 75.78125,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Phi-4-14B",
+      "system": "guard_refill",
+      "label": "Guard-refill",
+      "mean_pct": 79.6875,
+      "ci_low_pct": 72.65625,
+      "ci_high_pct": 85.9375,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Gemma-3-27B",
+      "system": "guard_refill",
+      "label": "Guard-refill",
+      "mean_pct": 67.96875,
+      "ci_low_pct": 60.15625,
+      "ci_high_pct": 75.78125,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "MedGemma-27B",
+      "system": "guard_refill",
+      "label": "Guard-refill",
+      "mean_pct": 72.65625,
+      "ci_low_pct": 64.0625,
+      "ci_high_pct": 81.25,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Qwen3-30B",
+      "system": "guard_refill",
+      "label": "Guard-refill",
+      "mean_pct": 89.0625,
+      "ci_low_pct": 83.59375,
+      "ci_high_pct": 94.53125,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Qwen3-4B",
+      "system": "clinehr_os",
+      "label": "EHR-AgentGuard (verified)",
+      "mean_pct": 100.0,
+      "ci_low_pct": 100.0,
+      "ci_high_pct": 100.0,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Phi-4-14B",
+      "system": "clinehr_os",
+      "label": "EHR-AgentGuard (verified)",
+      "mean_pct": 100.0,
+      "ci_low_pct": 100.0,
+      "ci_high_pct": 100.0,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Gemma-3-27B",
+      "system": "clinehr_os",
+      "label": "EHR-AgentGuard (verified)",
+      "mean_pct": 100.0,
+      "ci_low_pct": 100.0,
+      "ci_high_pct": 100.0,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "MedGemma-27B",
+      "system": "clinehr_os",
+      "label": "EHR-AgentGuard (verified)",
+      "mean_pct": 100.0,
+      "ci_low_pct": 100.0,
+      "ci_high_pct": 100.0,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "LabTrend",
+      "model": "Qwen3-30B",
+      "system": "clinehr_os",
+      "label": "EHR-AgentGuard (verified)",
+      "mean_pct": 100.0,
+      "ci_low_pct": 100.0,
+      "ci_high_pct": 100.0,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Qwen3-4B",
+      "system": "prompt_all6",
+      "label": "All-six prompt",
+      "mean_pct": 39.0625,
+      "ci_low_pct": 33.59375,
+      "ci_high_pct": 44.53125,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Phi-4-14B",
+      "system": "prompt_all6",
+      "label": "All-six prompt",
+      "mean_pct": 67.96875,
+      "ci_low_pct": 60.15625,
+      "ci_high_pct": 75.78125,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Gemma-3-27B",
+      "system": "prompt_all6",
+      "label": "All-six prompt",
+      "mean_pct": 53.125,
+      "ci_low_pct": 44.53125,
+      "ci_high_pct": 61.71875,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "MedGemma-27B",
+      "system": "prompt_all6",
+      "label": "All-six prompt",
+      "mean_pct": 51.5625,
+      "ci_low_pct": 42.1875,
+      "ci_high_pct": 60.9375,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Qwen3-30B",
+      "system": "prompt_all6",
+      "label": "All-six prompt",
+      "mean_pct": 60.15625,
+      "ci_low_pct": 52.34375,
+      "ci_high_pct": 67.96875,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Qwen3-4B",
+      "system": "scope_first",
+      "label": "Scope-first",
+      "mean_pct": 82.03125,
+      "ci_low_pct": 75.78125,
+      "ci_high_pct": 88.28125,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Phi-4-14B",
+      "system": "scope_first",
+      "label": "Scope-first",
+      "mean_pct": 75.78125,
+      "ci_low_pct": 68.75,
+      "ci_high_pct": 82.8125,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Gemma-3-27B",
+      "system": "scope_first",
+      "label": "Scope-first",
+      "mean_pct": 81.25,
+      "ci_low_pct": 74.21875,
+      "ci_high_pct": 88.28125,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "MedGemma-27B",
+      "system": "scope_first",
+      "label": "Scope-first",
+      "mean_pct": 31.25,
+      "ci_low_pct": 22.65625,
+      "ci_high_pct": 39.84375,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Qwen3-30B",
+      "system": "scope_first",
+      "label": "Scope-first",
+      "mean_pct": 92.1875,
+      "ci_low_pct": 87.5,
+      "ci_high_pct": 96.09375,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Qwen3-4B",
+      "system": "guard_refill",
+      "label": "Guard-refill",
+      "mean_pct": 89.0625,
+      "ci_low_pct": 83.59375,
+      "ci_high_pct": 93.75,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Phi-4-14B",
+      "system": "guard_refill",
+      "label": "Guard-refill",
+      "mean_pct": 77.34375,
+      "ci_low_pct": 70.3125,
+      "ci_high_pct": 84.375,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Gemma-3-27B",
+      "system": "guard_refill",
+      "label": "Guard-refill",
+      "mean_pct": 89.84375,
+      "ci_low_pct": 83.59375,
+      "ci_high_pct": 95.3125,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "MedGemma-27B",
+      "system": "guard_refill",
+      "label": "Guard-refill",
+      "mean_pct": 79.6875,
+      "ci_low_pct": 71.875,
+      "ci_high_pct": 86.71875,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Qwen3-30B",
+      "system": "guard_refill",
+      "label": "Guard-refill",
+      "mean_pct": 92.1875,
+      "ci_low_pct": 87.5,
+      "ci_high_pct": 96.09375,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Qwen3-4B",
+      "system": "clinehr_os",
+      "label": "EHR-AgentGuard (verified)",
+      "mean_pct": 100.0,
+      "ci_low_pct": 100.0,
+      "ci_high_pct": 100.0,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Phi-4-14B",
+      "system": "clinehr_os",
+      "label": "EHR-AgentGuard (verified)",
+      "mean_pct": 100.0,
+      "ci_low_pct": 100.0,
+      "ci_high_pct": 100.0,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Gemma-3-27B",
+      "system": "clinehr_os",
+      "label": "EHR-AgentGuard (verified)",
+      "mean_pct": 100.0,
+      "ci_low_pct": 100.0,
+      "ci_high_pct": 100.0,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "MedGemma-27B",
+      "system": "clinehr_os",
+      "label": "EHR-AgentGuard (verified)",
+      "mean_pct": 100.0,
+      "ci_low_pct": 100.0,
+      "ci_high_pct": 100.0,
+      "n_tasks": 128,
+      "n_patients": 64
+    },
+    {
+      "family": "MedDose",
+      "model": "Qwen3-30B",
+      "system": "clinehr_os",
+      "label": "EHR-AgentGuard (verified)",
+      "mean_pct": 100.0,
+      "ci_low_pct": 100.0,
+      "ci_high_pct": 100.0,
+      "n_tasks": 128,
+      "n_patients": 64
+    }
+  ]
+}

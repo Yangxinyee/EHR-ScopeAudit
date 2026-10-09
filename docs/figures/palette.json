@@ -1,0 +1,14 @@
+{
+  "ink": "#23272B",
+  "secondary": "#626C76",
+  "rule": "#DEE2E6",
+  "neutral": "#E7EAEE",
+  "baseline_fill": "#C2C8D0",
+  "scope": "#004488",
+  "scope_fill": "#91AECD",
+  "scope_panel": "#D6E3F1",
+  "audit": "#55616D",
+  "valid": "#004488",
+  "valid_fill": "#EEF3F8",
+  "invalid": "#994455"
+}

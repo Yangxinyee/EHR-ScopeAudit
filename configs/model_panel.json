@@ -1,0 +1,62 @@
+[
+  {
+    "tag": "qwen3_4b",
+    "label": "Qwen3-4B",
+    "family": "Qwen",
+    "developer": "Alibaba",
+    "parameters": "4B dense",
+    "repo": "Qwen/Qwen3-4B-Instruct-2507",
+    "revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+    "serving": "sglang bf16"
+  },
+  {
+    "tag": "phi4_14b",
+    "label": "Phi-4",
+    "family": "Microsoft Phi",
+    "developer": "Microsoft",
+    "parameters": "14B dense",
+    "repo": "microsoft/phi-4",
+    "revision": "2db69c1c3e91a05d2c64a3185acfbaf36f744e25",
+    "serving": "sglang bf16"
+  },
+  {
+    "tag": "gemma3_27b",
+    "label": "Gemma-3-27B",
+    "family": "Google Gemma",
+    "developer": "Google",
+    "parameters": "27B dense",
+    "repo": "google/gemma-3-27b-it",
+    "revision": "005ad3404e59d6023443cb575daa05336842228a",
+    "serving": "sglang bf16"
+  },
+  {
+    "tag": "medgemma_27b",
+    "label": "MedGemma-27B",
+    "family": "Google Gemma",
+    "developer": "Google",
+    "parameters": "27B dense, medical adaptation of Gemma-3-27B",
+    "repo": "google/medgemma-27b-text-it",
+    "revision": "5b667cf2ddcf064085bc90952edb35a0edbfb79c",
+    "serving": "sglang bf16"
+  },
+  {
+    "tag": "qwen3_32b",
+    "label": "Qwen3-32B",
+    "family": "Qwen",
+    "developer": "Alibaba",
+    "parameters": "32B dense, hybrid thinking (run with thinking disabled)",
+    "repo": "Qwen/Qwen3-32B",
+    "revision": "9216db5781bf21249d130ec9da846c4624c16137",
+    "serving": "sglang bf16"
+  },
+  {
+    "tag": "qwen3_30b",
+    "label": "Qwen3-30B-A3B",
+    "family": "Qwen",
+    "developer": "Alibaba",
+    "parameters": "30B MoE, 3B active",
+    "repo": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+    "revision": "0d7cf23991f47feeb3a57ecb4c9cee8ea4a17bfe",
+    "serving": "sglang bf16"
+  }
+]

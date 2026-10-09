@@ -1,0 +1,130 @@
+{
+  "record": "ScopePair extended model-panel freeze",
+  "addendum": "experiments/SCOPEPAIR_MODEL_PANEL_ADDENDUM.md",
+  "addendum_version": "1.0",
+  "freeze_date": "2026-07-27",
+  "formal_execution_started_at_freeze": false,
+  "scope_of_change": "checkpoint panel only; no manifest, contract, system, prompt, decoding, scorer, verifier, or statistical change",
+  "families": [
+    "ScopePair-FHIR (LabTrend)",
+    "ScopePair-MedAdmin (MedDose)"
+  ],
+  "split": "test",
+  "n_formal_cases": 64,
+  "n_formal_tasks_per_family": 128,
+  "decoding": {
+    "temperature": 0.0,
+    "strategy": "greedy",
+    "max_new_tokens": 384,
+    "maximum_guard_repairs": 1,
+    "seed": 2027
+  },
+  "runtime_policy": {
+    "cuda_required": true,
+    "cpu_inference_allowed": false,
+    "cpu_or_disk_offload_allowed": false,
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition"
+  },
+  "previously_frozen_checkpoints": [
+    {
+      "label": "Qwen3-4B",
+      "path": "Qwen__Qwen3-4B-Instruct-2507",
+      "family": "Qwen",
+      "parameters": "4B dense",
+      "revision": "cdbee75f17c01a7cc42f958dc650907174af0554"
+    },
+    {
+      "label": "Qwen3-30B-A3B",
+      "path": "Qwen__Qwen3-30B-A3B-Instruct-2507",
+      "family": "Qwen",
+      "parameters": "30B MoE, 3B active",
+      "revision": "0d7cf23991f47feeb3a57ecb4c9cee8ea4a17bfe"
+    }
+  ],
+  "new_checkpoints": [
+    {
+      "label": "Phi-4",
+      "path": "microsoft__phi-4",
+      "family": "Microsoft Phi",
+      "parameters": "14B dense",
+      "revision": "2db69c1c3e91a05d2c64a3185acfbaf36f744e25"
+    },
+    {
+      "label": "Gemma-3-27B",
+      "path": "google__gemma-3-27b-it",
+      "family": "Google Gemma",
+      "parameters": "27B dense",
+      "role": "general instruction-tuned member of the matched domain pair",
+      "revision": "005ad3404e59d6023443cb575daa05336842228a"
+    },
+    {
+      "label": "MedGemma-27B",
+      "path": "google__medgemma-27b-text-it",
+      "family": "Google Gemma",
+      "parameters": "27B dense",
+      "role": "medical-domain adapted member of the matched domain pair",
+      "revision": "5b667cf2ddcf064085bc90952edb35a0edbfb79c"
+    }
+  ],
+  "sha256": {
+    "lab_task_manifest": "aa005213123dc93fd62489460ea5cb1e7a96162f671238f278bf7d42d39e65c3",
+    "med_task_manifest": "764e69058410f1fc8c8fd76fb2ccf49b837eb4ee610aca71de826d1e1bc8c870",
+    "lab_runner": "65678ed281673e9468e5c914b504e631d206fb883a04991a46e39c03a59d97e7",
+    "lab_all6_runner": "13f738db2084e1bd3922fcec4add42d9cae6bd02dcbb0ebbf66d69871df180dd",
+    "med_runner": "9d11a0f72ff17249ee919f3c57d93fc14aa561658b843bdbbd0c1ccb0887fed5",
+    "lab_analyzer": "789cb14d9cb1e27151b52632826dce6ea029ceda30cb5a23b786e6d5a9d7a158",
+    "med_analyzer": "1a93bbde90303c5a99061d9ad92289180b59e439e67f7baedcf3119f2582b2c9",
+    "case_analyzer": "704789af2ab91f165083ad0f1c9c656bf561d312abfbbe023790e809c98cd2ce",
+    "addendum": "c4ccfc2d9b7dbbdc7c6cf90533a31ed5e221be41c9276d39a28f73f43cf2953f",
+    "lab_system_prompt": "6ab83151580ed764a83482afdee8400897dc8b2262fec8d019ae73b2de2cfa70",
+    "med_system_prompt": "bec05a1b8dcc470e4f44ece59aaa7637bc7c34b2f5e03679dabcad6521e67201"
+  },
+  "unchanged_from_parent_freeze": {
+    "med_task_manifest": true,
+    "med_runner": true,
+    "med_analyzer": true,
+    "med_system_prompt": true,
+    "reference": "experiments/SCOPEPAIR_MEDADMIN_FORMAL_FREEZE.json"
+  },
+  "confirmatory_comparisons_per_checkpoint": {
+    "labtrend": [
+      [
+        "clinehr_os",
+        "unscoped"
+      ],
+      [
+        "clinehr_os",
+        "late_no_refill"
+      ],
+      [
+        "clinehr_os",
+        "scope_first"
+      ],
+      [
+        "scope_first",
+        "wrong_time_scope_first"
+      ]
+    ],
+    "meddose": [
+      [
+        "clinehr_os",
+        "prompt_all6"
+      ],
+      [
+        "clinehr_os",
+        "scope_first"
+      ],
+      [
+        "scope_first",
+        "unscoped"
+      ]
+    ]
+  },
+  "confirmatory_endpoint": "both-task case success over 64 independent patient cases, exact two-sided McNemar, Holm-adjusted within checkpoint",
+  "notes": [
+    "LabTrend all-six remains labeled post-hoc for every checkpoint.",
+    "MedDose all-six remains prospective for every checkpoint.",
+    "Checkpoints are replications, not pooled samples.",
+    "The MedGemma-27B versus Gemma-3-27B contrast is descriptive and underpowered by design."
+  ]
+}

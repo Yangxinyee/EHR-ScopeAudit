@@ -1,0 +1,132 @@
+#!/usr/bin/env python3
+"""Draw an introductory scope counterexample and two frozen Tier-B estimates.
+
+The left panel is schematic, not a patient observation. The right panel reads
+the manuscript's frozen macros; it does not rerun analyses or infer new rates.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--out", type=Path, default=ROOT / "docs/figures/scope_teaser.pdf")
+    args = parser.parse_args()
+    values_path = ROOT / "results/paper/macros.json"
+    palette_path = ROOT / "docs/figures/palette.json"
+    values = json.loads(values_path.read_text())
+    palette = json.loads(palette_path.read_text())
+    exposed = float(values["B.exposed"])
+    hidden = float(values["B.div.prompt_only"])
+    checkpoints = int(values["B.n_ckpt"])
+    if not 0 <= hidden <= exposed <= 100:
+        raise ValueError("The hidden violation rate must be a subset of the exposure rate")
+
+    matplotlib.rcParams.update({
+        "font.family": "sans-serif",
+        "font.sans-serif": ["Helvetica", "Arial", "DejaVu Sans"],
+        "font.size": 9,
+        "text.color": palette["ink"],
+        "pdf.fonttype": 42,
+        "ps.fonttype": 42,
+        "svg.fonttype": "none",
+        "svg.hashsalt": "ehr-agentguard-scope-teaser",
+        "hatch.linewidth": 0.6,
+    })
+    fig = plt.figure(figsize=(7.1, 2.15), facecolor="white")
+    left = fig.add_axes((0.015, 0.06, 0.555, 0.90))
+    right = fig.add_axes((0.62, 0.06, 0.365, 0.90))
+    for ax in (left, right):
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.axis("off")
+
+    left.text(0, 1, "(a) Same answer, different evidence paths", va="top", weight="bold")
+    # A decision boundary separates earlier available evidence from a later result.
+    left.add_patch(Rectangle((0, 0.61), 0.55, 0.24, color=palette["scope_panel"], lw=0))
+    left.add_patch(Rectangle((0.55, 0.61), 0.45, 0.24, color=palette["invalid"], alpha=0.09, lw=0))
+    left.plot((0.04, 0.96), (0.71, 0.71), color=palette["secondary"], lw=0.8)
+    left.plot((0.55, 0.55), (0.60, 0.89), color=palette["ink"], lw=0.85, ls=(0, (2, 2)))
+    left.scatter((0.18, 0.82), (0.71, 0.71), s=25,
+                 color=(palette["scope"], palette["invalid"]), zorder=3)
+    left.text(0.18, 0.82, "Earlier record", ha="center", va="center", fontsize=8.5)
+    left.text(0.82, 0.82, "Later result", ha="center", va="center", fontsize=8.5)
+    left.text(0.18, 0.645, r"$e_1$", ha="center", va="center", color=palette["scope"])
+    left.text(0.82, 0.645, r"$e_2$", ha="center", va="center", color=palette["invalid"])
+    left.text(0.55, 0.905, "Decision time", ha="center", va="center", fontsize=8.2)
+    left.text(0.015, 0.515, "Agent", fontsize=8.5, color=palette["secondary"])
+    left.text(0.47, 0.515, "Accesses", ha="center", fontsize=8.5, color=palette["secondary"])
+    left.text(0.71, 0.515, "Cites", ha="center", fontsize=8.5, color=palette["secondary"])
+    left.text(0.915, 0.515, "Answer", ha="center", fontsize=8.5, color=palette["secondary"])
+    left.plot((0, 1), (0.475, 0.475), color=palette["rule"], lw=0.7)
+    left.text(0.015, 0.35, "Unscoped", va="center")
+    left.text(0.405, 0.35, r"$e_1$", va="center", ha="center", color=palette["scope"])
+    left.text(0.465, 0.35, "+", va="center", ha="center")
+    left.text(0.525, 0.35, r"$e_2$", va="center", ha="center", color=palette["invalid"])
+    left.text(0.015, 0.15, "EHR-AgentGuard", va="center", color=palette["scope"])
+    left.text(0.47, 0.15, r"$e_1$", va="center", ha="center", color=palette["scope"])
+    for y in (0.35, 0.15):
+        left.text(0.71, y, r"$e_1$", va="center", ha="center", color=palette["scope"])
+        left.text(0.915, y, "Correct", va="center", ha="center")
+
+    right.text(0, 1, "(b) What citations miss", va="top", weight="bold")
+    right.text(0, 0.87, f"Prompt-only · {checkpoints}-checkpoint mean", fontsize=8.5, color=palette["secondary"])
+    # Both bars share a 0–100% scale and the all-task denominator. The second
+    # endpoint is the joint event, not a fraction conditional on exposure.
+    bar_start, bar_width = 0.01, 0.86
+    for y, rate, label, hatch in (
+        (0.61, exposed, "Any inadmissible access", None),
+        (0.30, hidden, "With fully admissible citations", "///"),
+    ):
+        right.text(bar_start, y + 0.125, label, fontsize=8.5, va="bottom")
+        right.add_patch(Rectangle((bar_start, y), bar_width, 0.10,
+                                  facecolor=palette["neutral"], lw=0))
+        right.add_patch(Rectangle((bar_start, y), bar_width * rate / 100, 0.10,
+                                  facecolor=palette["invalid"], edgecolor="white",
+                                  hatch=hatch, lw=0))
+        right.text(bar_start + bar_width * rate / 100 + 0.025, y + 0.05,
+                   f"{rate:.1f}%", va="center", fontsize=9, weight="bold", color=palette["invalid"])
+    right.plot((bar_start, bar_start + bar_width), (0.205, 0.205), color=palette["secondary"], lw=0.65)
+    for tick in (0, 50, 100):
+        x = bar_start + bar_width * tick / 100
+        right.plot((x, x), (0.205, 0.18), color=palette["secondary"], lw=0.6)
+        right.text(x, 0.14, str(tick), ha="center", va="center", fontsize=8.2)
+    right.text(bar_start + bar_width / 2, 0.045, "All evaluated tasks (%)", ha="center", va="center", fontsize=8.5)
+    fig.add_artist(plt.Line2D((0.593, 0.593), (0.11, 0.88), transform=fig.transFigure,
+                             color=palette["rule"], lw=0.7))
+
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(args.out, metadata={"CreationDate": None})
+    fig.savefig(args.out.with_suffix(".png"), dpi=300)
+    fig.savefig(args.out.with_suffix(".svg"))
+    plt.close(fig)
+    trace = {
+        "artifact_id": "fig:scope_teaser",
+        "source_data": str(values_path.relative_to(ROOT)),
+        "source_sha256": hashlib.sha256(values_path.read_bytes()).hexdigest(),
+        "palette_sha256": hashlib.sha256(palette_path.read_bytes()).hexdigest(),
+        "generator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "values": {"B.exposed": exposed, "B.div.prompt_only": hidden, "B.n_ckpt": checkpoints},
+        "transformation": "Read rounded checkpoint means from frozen manuscript macros; no reanalysis.",
+        "caption_claim": "Admissible citations can conceal inadmissible access.",
+        "supported_manuscript_claims": [{"claim": "An agent can read a future result, return the correct answer, and cite earlier records that also support it.", "locator": "Introduction, paragraph 2"}],
+        "limitations": ["Panel (a) is illustrative; both records can support the same answer.", "Panel (b) summarizes prompt-only Tier-B checkpoints; it does not measure clinician outcomes or condition on correct answers.", "These rounded descriptive means are shown without uncertainty intervals; detailed results are reported later in the paper."],
+    }
+    args.out.with_suffix(".json").write_text(json.dumps(trace, indent=2) + "\n")
+    print(f"Wrote {args.out}: {exposed:.1f}% exposed, {hidden:.1f}% hidden, all-task denominator")
+
+
+if __name__ == "__main__":
+    main()

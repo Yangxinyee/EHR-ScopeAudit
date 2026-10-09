@@ -1,0 +1,778 @@
+{
+  "audit": "Explicit allowlist, license review, pattern scan, and dataset integrity checks.",
+  "excluded": [
+    "restricted clinical data and derivatives",
+    "patient-level model outputs",
+    "institutional records and salts",
+    "credentials and infrastructure",
+    "old Git history and manuscript backups",
+    "model weights and third-party datasets"
+  ],
+  "files": {
+    ".github/workflows/tests.yml": {
+      "bytes": 759,
+      "sha256": "a1b6d4ca7740e863cd577191b5069bb76862bf7c554d4ddf08e16958ffa78024"
+    },
+    ".gitignore": {
+      "bytes": 921,
+      "sha256": "e2343bd138a1aaee49adf49d5592945da791f8cd563238a0a67e5cc7cb4ecfeb"
+    },
+    "CITATION.bib": {
+      "bytes": 1102,
+      "sha256": "86003f623e80b604a76aa87c49c9e7b72df69b84b9b5e3376ff1f0f1f5205abd"
+    },
+    "CITATION.cff": {
+      "bytes": 497,
+      "sha256": "b603f6e773c30f32a696120512b00e6cff878630271a743c9131068ae1af3ec7"
+    },
+    "DATA_LICENSE_NOTICE.md": {
+      "bytes": 3092,
+      "sha256": "c255c1bdca183d5c5593a473d90fe3908b30f144928d9877d6bbf99c7b035c74"
+    },
+    "LICENSE": {
+      "bytes": 1301,
+      "sha256": "2122b0ef2a897f93d424c9c60a81beefb51358f770d3132f3d9b376dd8fbf94b"
+    },
+    "README.md": {
+      "bytes": 5259,
+      "sha256": "a525a325b093a5c6e58a07ca48e88e408a02f347a3afc024b9ea8cb3b8fa889e"
+    },
+    "THIRD_PARTY_NOTICES.md": {
+      "bytes": 2428,
+      "sha256": "124c5b7148d50583f84b30761df0f2d5b8c456a893fb3224cce8165a5223799b"
+    },
+    "configs/model_panel.json": {
+      "bytes": 1729,
+      "sha256": "04c7099fadd8bc616dbac8c7044ac0a2b93e09916c80d6189c872e0c071e5c11"
+    },
+    "docs/RELEASE_SCOPE.md": {
+      "bytes": 3430,
+      "sha256": "b7abf99a96f485f84e97528872702d29bde806c91cff9a3053fad06eea9cb8c7"
+    },
+    "docs/REPRODUCIBILITY.md": {
+      "bytes": 5885,
+      "sha256": "ec43bef5191beaa49b8cb679fe30e02a4320e65671132ba84c5b215a21d1b423"
+    },
+    "docs/VALIDATION.md": {
+      "bytes": 1608,
+      "sha256": "2dd00e49ec95920703f138ef0d08e0323badcfca6563068d3c8ae8fe67069d2f"
+    },
+    "docs/figures/architecture.pdf": {
+      "bytes": 79183,
+      "sha256": "79baf38d7e91dc1890546b70b3c75b4600784b78db2d94848d507c402b6df44b"
+    },
+    "docs/figures/architecture.png": {
+      "bytes": 183720,
+      "sha256": "86d616f9aa9de25c06be7ef70c2ed68bfad629e22bac61cc2b5c75fab919bcc5"
+    },
+    "docs/figures/architecture.tex": {
+      "bytes": 7729,
+      "sha256": "c75722f10e44ad0c732463e852f5f54080e0b07d5c9c9bf0b193e83370d987ac"
+    },
+    "docs/figures/gap.pdf": {
+      "bytes": 28093,
+      "sha256": "32d1b90fae263c53374f6a29dfc7fe207ae8abf13126526a31b1b222d144f03b"
+    },
+    "docs/figures/operation_results.json": {
+      "bytes": 11722,
+      "sha256": "48f4e343851f82accfc4f4b13c22d0c7c700560552c25ee1ea949553ab94e0fa"
+    },
+    "docs/figures/operation_results.pdf": {
+      "bytes": 27989,
+      "sha256": "c3e74910444761bc4aa408da13d0bcd8257cee89e96e81efd5a865a22d8c8e21"
+    },
+    "docs/figures/operation_results.png": {
+      "bytes": 127974,
+      "sha256": "94af9d4d3eff63314f3218a4aaae4a4776e2925e9a37f9d0f1c53cf44e55fd42"
+    },
+    "docs/figures/operation_results.svg": {
+      "bytes": 43243,
+      "sha256": "2c4b7d0df2f891832317531acbb031e76c9931be693c5a71342cb64c725a9abe"
+    },
+    "docs/figures/palette.json": {
+      "bytes": 296,
+      "sha256": "5dae639754dbb8f56591b96862ff08e4560a97459391ae3709b93ded8ea95c69"
+    },
+    "docs/figures/scope_teaser.json": {
+      "bytes": 1202,
+      "sha256": "2e7a3a2c3f72139c4979bfd76e3beefe6c601a1cc6765281f03f7db1953a4887"
+    },
+    "docs/figures/scope_teaser.pdf": {
+      "bytes": 32455,
+      "sha256": "c9705362b57b6fbae67109c4d8d283b9298db86098f9969b88c770ffb7bf1789"
+    },
+    "docs/figures/scope_teaser.png": {
+      "bytes": 127911,
+      "sha256": "e5bc98e96dd71f291542a6b7202038cc521ab0c39336761c5d220556fd21b087"
+    },
+    "docs/figures/scope_teaser.svg": {
+      "bytes": 14091,
+      "sha256": "bd83c198fd7cf2552ead5df3576cbde44d2bb34435d2a7ff95773dc716e23d8e"
+    },
+    "examples/__init__.py": {
+      "bytes": 41,
+      "sha256": "7f05e8aa7113afa72d3ba50202595c1addc1efcee0fac30c51cd8919c71f7616"
+    },
+    "examples/scope_demo.py": {
+      "bytes": 3191,
+      "sha256": "50ec5f44ad926438db3281e1558e97b511a049d54ab4e8114cf060ea32d18305"
+    },
+    "experiments/SCOPEPAIR_MODEL_PANEL_FREEZE.json": {
+      "bytes": 4349,
+      "sha256": "b1351dde50db616acf9e7abe794b00ef18c6ee4bddabd50210800aa6362b38da"
+    },
+    "experiments/scopepair_fhir/DATA_CARD.md": {
+      "bytes": 1756,
+      "sha256": "7f29ee15b0cfd8ca9333bc79c60e8714255ba136d29da40e02c41a9634519d6f"
+    },
+    "experiments/scopepair_fhir/metadata.json": {
+      "bytes": 735,
+      "sha256": "d9d998a120cbb63aec5754f16e821a611f892aca0c5d2b504e121651ea2d4742"
+    },
+    "experiments/scopepair_fhir/tasks.jsonl": {
+      "bytes": 352680,
+      "sha256": "aa005213123dc93fd62489460ea5cb1e7a96162f671238f278bf7d42d39e65c3"
+    },
+    "experiments/scopepair_medadmin/DATA_CARD.md": {
+      "bytes": 1764,
+      "sha256": "daba89d3d6d1862083eb4c92bf0971436d5849c41feeb4c37f3d0e0e3c6833f9"
+    },
+    "experiments/scopepair_medadmin/metadata.json": {
+      "bytes": 1221,
+      "sha256": "8d462f744024acc46eb11f36e4427dbce7b449d4db9e59528c7733b31523d17e"
+    },
+    "experiments/scopepair_medadmin/tasks.jsonl": {
+      "bytes": 421559,
+      "sha256": "764e69058410f1fc8c8fd76fb2ccf49b837eb4ee610aca71de826d1e1bc8c870"
+    },
+    "licenses/FHIR-AgentBench-CC-BY-4.0.txt": {
+      "bytes": 18650,
+      "sha256": "7e7170e3cebf88a9f60c7b8421418323c09304da1af4d5e90f4da1dc1c8a2661"
+    },
+    "licenses/MedAgentBench-MIT.txt": {
+      "bytes": 1088,
+      "sha256": "a5dd06db7e5e4d6f790b24d2c54a027e1b5ad7519786bd31a7ff6508cd354828"
+    },
+    "licenses/ODbL-1.0.txt": {
+      "bytes": 25278,
+      "sha256": "607680718977f6f6c9607972afd98f208573f19251315ed1362a8589b51beaf5"
+    },
+    "pyproject.toml": {
+      "bytes": 1097,
+      "sha256": "e9ac0ac2654b9aff0107a3c011b9bdca81120bd7ab020b7e22a80631addb7381"
+    },
+    "requirements/validated-cpu-py313.txt": {
+      "bytes": 699,
+      "sha256": "a0c2f8e663ee5f2086e4e46536661ee12f0a54ca861acc73747a6c9c5f829b13"
+    },
+    "results/paper/macros.json": {
+      "bytes": 303431,
+      "sha256": "507992749d5820fa82acf0b0bc4a725382beb9408f64d4cd57486379fd1f7046"
+    },
+    "results/paper/table_abstain.tex": {
+      "bytes": 552,
+      "sha256": "e879ea894a6795193c969804f495a75ed469eb354091dd5255365caa5da55d11"
+    },
+    "results/paper/table_cost.tex": {
+      "bytes": 531,
+      "sha256": "ae7012c94ee66698dc8fad3e84ded9dbda308f7aeabf398f651b743c2980e000"
+    },
+    "results/paper/table_coverage.tex": {
+      "bytes": 639,
+      "sha256": "555d37dd1fd84ef5c9e96e2360bad3fb105208a30cb3b16754cea90f4f646a57"
+    },
+    "results/paper/table_errors.tex": {
+      "bytes": 719,
+      "sha256": "358a129c90291b5f1255fc5861c9b84cb06fc0d6538306ec22abe3e467a0f4c8"
+    },
+    "results/paper/table_factor.tex": {
+      "bytes": 926,
+      "sha256": "042950c2df268f4d694a1c5fa5d56bf1904735aec9b659a6e1b359fb5b39df83"
+    },
+    "results/paper/table_frontier.tex": {
+      "bytes": 1246,
+      "sha256": "d39c658eac452f53a5029fc6c495c26d123d31cb4303e2c5e8cc9dedb52c0be4"
+    },
+    "results/paper/table_frontier_ckpt.tex": {
+      "bytes": 2387,
+      "sha256": "2c82a387038ce12846258061cf7b1a9b85265019d8077dc1caf0d26bee519422"
+    },
+    "results/paper/table_main.tex": {
+      "bytes": 2225,
+      "sha256": "72104231c44101fe0e9f6e1c532f5fea936e84bbb42df823557dcfb137660317"
+    },
+    "results/paper/table_masking.tex": {
+      "bytes": 580,
+      "sha256": "7125510289b2146c051bd376beeaaef2942bdfa3204ea096acd642628b54e976"
+    },
+    "results/paper/table_medagent_cat.tex": {
+      "bytes": 1073,
+      "sha256": "03c05e65df9e61653bb4b9eb09bcf5cdf721680cca2422c67da06a0e1f7de98c"
+    },
+    "results/paper/table_models.tex": {
+      "bytes": 763,
+      "sha256": "a7bf019ffde17e1c515e2afc6dd65861a8baf2c25663973c7a8fa413a9ca9b89"
+    },
+    "results/paper/table_models_a.tex": {
+      "bytes": 763,
+      "sha256": "99f6ffd4860e040abc5a3c65a900b52ae2c4f91b8e064c29b0941ae73d3e02ad"
+    },
+    "results/paper/table_models_c.tex": {
+      "bytes": 763,
+      "sha256": "f2a9d090729ffe1dcb30a6ac80ada09709790c6e29dabafcfda1420afa8dba09"
+    },
+    "results/paper/table_policy.tex": {
+      "bytes": 1003,
+      "sha256": "3def8a5d91c17ab916fce87be6d0a2e210982cd5770c7f8b40f46bf027e56b88"
+    },
+    "results/paper/table_sensitivity.tex": {
+      "bytes": 953,
+      "sha256": "22e40da2fd2ab37b77c43c88e67a2287f00ba69603685466d343c4d326c3caf2"
+    },
+    "results/paper/table_stages.tex": {
+      "bytes": 303,
+      "sha256": "148a0b6d82a34f80f1c8d859756808f2cea4046ed6247bb5e85ae3fcbd86704b"
+    },
+    "results/paper/table_strata.tex": {
+      "bytes": 946,
+      "sha256": "3d51a3afc444e950c2007c595f2a9e3d7f0978476876548c19f1b7d4a4f5cc8e"
+    },
+    "results/paper/table_strata_a.tex": {
+      "bytes": 1015,
+      "sha256": "0b61e7a9fbd0816ee863decfc95b5c51cf857ed6e850ce8c2d3b376fb4b04667"
+    },
+    "results/paper/table_tests.tex": {
+      "bytes": 803,
+      "sha256": "23c7c623fee247e3149f06a801159af0f751d6cf3ebfdd09d91bc782babfbfdc"
+    },
+    "results/scopebench/tierB_panel.json": {
+      "bytes": 17321,
+      "sha256": "e22343b05737a9aad84b62ea64782c953beafc595809c69b5631b457ab2bf379"
+    },
+    "results/scopepair/labtrend/summary.csv": {
+      "bytes": 10006,
+      "sha256": "abf2bf531c0376d7a30d7ddfcc50a92464b860012bcb11feb288e39e3678e242"
+    },
+    "results/scopepair/meddose/summary.csv": {
+      "bytes": 8327,
+      "sha256": "26643e76419c805d2b6a0ea5d98a5173486c674fa953cf2d6745b8357da6197c"
+    },
+    "scopebench/SKILL_SPEC.md": {
+      "bytes": 12367,
+      "sha256": "b7b71c2a686c2e6c65a223cdd07097f70b7637eaae23939246a22a11b6aa9220"
+    },
+    "scopebench/__init__.py": {
+      "bytes": 313,
+      "sha256": "eba053b0a743b52b474b190e749e35202bcc7846bbe64ae215c107320be798f5"
+    },
+    "scopebench/backends/__init__.py": {
+      "bytes": 181,
+      "sha256": "cb3485ad1ffad3a14949a5ee01afb127524256f4ae5102f610a4b6014b9837fd"
+    },
+    "scopebench/backends/base.py": {
+      "bytes": 1029,
+      "sha256": "337f42dfc5a5cbe39ae426189426dc80b46a74923795f0bf4fc9063e8192a424"
+    },
+    "scopebench/backends/claude_batch.py": {
+      "bytes": 13237,
+      "sha256": "0447cb24fc793a7c67ed20563c2fdc7d463646ff94c97ca5589f19024fde0484"
+    },
+    "scopebench/backends/hf_local.py": {
+      "bytes": 3221,
+      "sha256": "ee28e4aed71d6fa782e8d0c5ea3659232bb5653c11a2057f1097f7c330c11ea1"
+    },
+    "scopebench/backends/oracle_backend.py": {
+      "bytes": 2534,
+      "sha256": "b7c4d209d15f01b557885bbe7716525f7d20a700f17862f82234d0a08bb6c0bc"
+    },
+    "scopebench/backends/sglang_http.py": {
+      "bytes": 7580,
+      "sha256": "6a67757a16c0ec08792acfb462cc2b8b1e8e7f6fe4539917a033749ef250f91c"
+    },
+    "scopebench/compat_scopepair.py": {
+      "bytes": 2215,
+      "sha256": "5921889d2250e77740ca5c4c823dda8e3420021be1cb04230a90dd9ceb902ef1"
+    },
+    "scopebench/config.py": {
+      "bytes": 1545,
+      "sha256": "e9dcb07c7121a7a45fe91feabb97ec7f1d630a59ab25e0fc2168012be1a0c71c"
+    },
+    "scopebench/configurations.py": {
+      "bytes": 6277,
+      "sha256": "035cc8b9af7bc9f83cc47da058f2cd9549a29e78e4fd7d71a19d8dc080ad667b"
+    },
+    "scopebench/context_guard.py": {
+      "bytes": 2680,
+      "sha256": "a71679eb76c928b96577db6305beb3ec7d23264bac5f365007879d8d0e5a7aab"
+    },
+    "scopebench/guard.py": {
+      "bytes": 8515,
+      "sha256": "df1d17015b25bd3212b9d9c11018a022a849c41afeb513fcd1f7aacd87598284"
+    },
+    "scopebench/manifest.py": {
+      "bytes": 1112,
+      "sha256": "e99c43e83d8746a65330626fce244c09a6a3e4b2718a8465d66ae61a1f0df007"
+    },
+    "scopebench/oracle/__init__.py": {
+      "bytes": 341,
+      "sha256": "f37064186c733d233dca1071de6958cd117df6e54af11d3e23b73ee4a46b5170"
+    },
+    "scopebench/oracle/operations.py": {
+      "bytes": 17189,
+      "sha256": "91e6ffc0bb946373e16fd4ed40054c1a96bcc7d1bc885c14de9d4068c8148f31"
+    },
+    "scopebench/parser.py": {
+      "bytes": 1286,
+      "sha256": "f35ef012f7cf774cb429c3140a7721ac1aeb546246271bbf5698107c55f097c1"
+    },
+    "scopebench/policy_engines.py": {
+      "bytes": 4971,
+      "sha256": "05ca0197fa340b407475f89b50b627218b9589642c8c075fba1f4311082871b0"
+    },
+    "scopebench/predicate.py": {
+      "bytes": 2994,
+      "sha256": "cf1d72b67efb0f747c468c215eb9a3e9f7c8774978796ad80b0a3682fc9059bc"
+    },
+    "scopebench/retrieval.py": {
+      "bytes": 9255,
+      "sha256": "e5f81c6376e8016ae9eed0cb62d0375f58813e286bf22cfc8954d4eaab28aebe"
+    },
+    "scopebench/runner.py": {
+      "bytes": 26261,
+      "sha256": "58ed243542848b3a3ff3842bb4fbc50af48b57b8c0221ff3dc3ca2c8c7eb5681"
+    },
+    "scopebench/schema.py": {
+      "bytes": 6687,
+      "sha256": "76f48e29be2c864ee06ebd9639dd761cde6763f170082965c50d9ccc184b01fd"
+    },
+    "scopebench/scoring.py": {
+      "bytes": 4316,
+      "sha256": "452e3c1f67d9ea635d5da42285b4d1673a41d3ab583f2fce74b2ad19958d552d"
+    },
+    "scopebench/sensitivity.py": {
+      "bytes": 8605,
+      "sha256": "163d956327c046c135506d486b58f112a082cb32e9d169837f5af20f8dd33504"
+    },
+    "scopebench/skills/__init__.py": {
+      "bytes": 736,
+      "sha256": "af41d342d4bef288714b10610c6ec828d627747d650880fdf8e326d89ab13760"
+    },
+    "scopebench/skills/operations.py": {
+      "bytes": 19252,
+      "sha256": "340c8d9c9e7ca854e7900695fc9066c10642427e607c128286b9a69706fa46ad"
+    },
+    "scopebench/stats.py": {
+      "bytes": 4013,
+      "sha256": "6497c0e8cb617a93137a833e8d9b89c4f3126ffcfa933afb876c6150609bce04"
+    },
+    "scopebench/tasktypes.py": {
+      "bytes": 11901,
+      "sha256": "da5c313a58ab2d8b3673f4a309929d5d8685de8609b951c0d573b2757347f47b"
+    },
+    "scopebench/tasktypes_tiera.py": {
+      "bytes": 4356,
+      "sha256": "eb1e5d30a05a47a9e4aecf9be3ad4e708f280e061ac644ff7d2369e392eaa6f9"
+    },
+    "scopebench/tasktypes_tierb.py": {
+      "bytes": 16152,
+      "sha256": "bd52b5a4642e2e223caec4a0ea53cb2a827f4b1d49802b82c9e1f3db437fcbb3"
+    },
+    "scopebench/tasktypes_tierc.py": {
+      "bytes": 6126,
+      "sha256": "815937c3512c5c897ab164be66cee1901f838da55f431faa6fa50dff7a231f30"
+    },
+    "scopebench/tiera/__init__.py": {
+      "bytes": 399,
+      "sha256": "7550b586a25069767fc97dd1f9b8b7969bd359a0cc5817c19f0d09e209151bae"
+    },
+    "scopebench/tiera/config.py": {
+      "bytes": 1485,
+      "sha256": "a7acf69069608d6d11322e158bdff8f08033866f8b4d8fd79e49cc44f6fdb858"
+    },
+    "scopebench/tiera/families.py": {
+      "bytes": 29001,
+      "sha256": "bdd7634fb8670ed77e0f8bc0277748f0bc5629c504229148ad3895e873091f41"
+    },
+    "scopebench/tiera/loader.py": {
+      "bytes": 26279,
+      "sha256": "d54ab6776dc4f65376476da1856838d3f713666d65bbf54b8397a8a3d8943706"
+    },
+    "scopebench/tiera/sampling.py": {
+      "bytes": 3687,
+      "sha256": "025ecff3acfdd9d0509a3f63f0d8b1df62b7571cd8069fa8773f12ba71e1ebaf"
+    },
+    "scopebench/tiera/sources.py": {
+      "bytes": 24230,
+      "sha256": "02adb66bb1ec6d6f06dad177e734c600036d1242d909761e7f5ef1ff879d31d3"
+    },
+    "scopebench/tiera/timeshift.py": {
+      "bytes": 2705,
+      "sha256": "106d5f0da881c7373d4024b2f8bc343e8c17dfec9841a65cbb305bbb2c2a5a37"
+    },
+    "scopebench/tierb/__init__.py": {
+      "bytes": 101,
+      "sha256": "c576b2a20506e84448aba424b55a52a12b54ce857f2ad8a7b647775776360273"
+    },
+    "scopebench/tierb/families.py": {
+      "bytes": 4444,
+      "sha256": "d42bf37d6bbcba99dc87d20eba294f32f6e440a0d29d3f484489f2ee560b69ad"
+    },
+    "scopebench/tierb/families_notes.py": {
+      "bytes": 10952,
+      "sha256": "97fe4291cfa00eb5e2ac212ac79f0843c304fb13f07a3158baf0ccd55ba8f896"
+    },
+    "scopebench/tierb/families_structured.py": {
+      "bytes": 9209,
+      "sha256": "b13bf354e7929126ccbcccfeb87068424eeef8fd39e2d7431fb634477eb0f981"
+    },
+    "scopebench/tierb/sampling.py": {
+      "bytes": 6156,
+      "sha256": "9d4090975e813891a62a6e43cc261cd7cc1caa358fb195059650eacba2024f65"
+    },
+    "scopebench/tierb/sources.py": {
+      "bytes": 15765,
+      "sha256": "b2d77c876f8837191a52fc49960fca85a389848cd2b309e3739c51333bd08e40"
+    },
+    "scopebench/tierc/__init__.py": {
+      "bytes": 106,
+      "sha256": "079e6d8edccf29ac9a803c24bdc7abdb9e78312ebc7c72741aaeee2080937f15"
+    },
+    "scopebench/tierc/agent.py": {
+      "bytes": 27448,
+      "sha256": "2733ea6626c1fdc5a22a2f23c110f70cdc30806db1b77faa198e1795bdf5cc03"
+    },
+    "scopebench/tierc/contracts.py": {
+      "bytes": 12888,
+      "sha256": "85558c56a66678e4b4c85525dd48d6370ffc6f4235a1b846104fd4a16ec83df7"
+    },
+    "scopebench/tierc/medagent.py": {
+      "bytes": 50429,
+      "sha256": "f9093bb9a170035c698bafd9f2449dae74efd490cdba318bc27979392cc2b074"
+    },
+    "scopebench/tierc/skills.py": {
+      "bytes": 26339,
+      "sha256": "515d9e80552c91985b62d57bbc62c29968cd2105b9600bfb8a0e328fa9965419"
+    },
+    "scopebench/tierc/store.py": {
+      "bytes": 10976,
+      "sha256": "a8b0ec6b75bcb9379a9f4875e64b27238d5d275b00d263be1b84e2bf9e6bcb06"
+    },
+    "scopebench/tools_loop.py": {
+      "bytes": 9827,
+      "sha256": "39f368f5a184225677af682d120e670b241876b13d8751734946140685c9f408"
+    },
+    "scripts/__init__.py": {
+      "bytes": 58,
+      "sha256": "dc7183aef848bd7a004e224de3c11afa2df6f000987436e1d5902e3d9b8fa13c"
+    },
+    "scripts/analyze_scopepair_case_level.py": {
+      "bytes": 5920,
+      "sha256": "704789af2ab91f165083ad0f1c9c656bf561d312abfbbe023790e809c98cd2ce"
+    },
+    "scripts/analyze_scopepair_fhir.py": {
+      "bytes": 12643,
+      "sha256": "789cb14d9cb1e27151b52632826dce6ea029ceda30cb5a23b786e6d5a9d7a158"
+    },
+    "scripts/analyze_scopepair_medadmin.py": {
+      "bytes": 15399,
+      "sha256": "1a93bbde90303c5a99061d9ad92289180b59e439e67f7baedcf3119f2582b2c9"
+    },
+    "scripts/audit_release.py": {
+      "bytes": 6174,
+      "sha256": "418c924f4c6fae12aee51611e674f835d8045de71ea45fa1bdde9f68779f3da2"
+    },
+    "scripts/build_scopepair_fhir.py": {
+      "bytes": 16025,
+      "sha256": "f9e5f621872da1fff1b3e5827da3059992415d49eed102db305fcbf09a1255b3"
+    },
+    "scripts/build_scopepair_medadmin.py": {
+      "bytes": 15370,
+      "sha256": "2052a436d567bd40f4e03f61c1c9a696572c806121adfdc9ed62b00dc8f3af44"
+    },
+    "scripts/fhir_benchmark_core.py": {
+      "bytes": 22258,
+      "sha256": "0c8ebf0bbdda6649390760a5bdcdc7c92fe901e9d63dd05956199996ae89339b"
+    },
+    "scripts/generate_complementarity_table.py": {
+      "bytes": 6521,
+      "sha256": "1c3bda09b107885e5a8965185d6adf2cb0cc8c1436ff6196f30d6cd44c4b97ea"
+    },
+    "scripts/generate_cot_table.py": {
+      "bytes": 5413,
+      "sha256": "5f2675592320b1f7b732fc7b99517811dc8fa2e3b9b2e7fcd19254617d553608"
+    },
+    "scripts/generate_submission_tables.py": {
+      "bytes": 23259,
+      "sha256": "8ef9012be986521d0fe0de70882464fa624d09190ead3af1793794f12760d734"
+    },
+    "scripts/paper/__init__.py": {
+      "bytes": 58,
+      "sha256": "40f3fc8333147c889d65abea866eae03e826e9b76df188cb63a448b19da087b2"
+    },
+    "scripts/paper/make_operation_figure.py": {
+      "bytes": 8241,
+      "sha256": "98c5b269cb2009f58f23d9ea6b854cc1ad91d004047af770c8cb44351a4aebce"
+    },
+    "scripts/paper/make_scope_teaser.py": {
+      "bytes": 7404,
+      "sha256": "1b0dca6fbfc8efa7ec6507089bdab90b0bde66339ac6f5c3c1a38e67d8f3b0e4"
+    },
+    "scripts/run_fhir_agentbench_corrected.py": {
+      "bytes": 33228,
+      "sha256": "f46414ca5d00a2e25ac62b9ad8da180fa5960356aac8732cb920fab65db2324c"
+    },
+    "scripts/run_medagentbench_corrected.py": {
+      "bytes": 23422,
+      "sha256": "141dd2ad22ea703ed13698c0c2511e37348a8ed2678a5e17586d0a00e1678173"
+    },
+    "scripts/run_scopepair_all6_cot.py": {
+      "bytes": 8793,
+      "sha256": "29f0ca32daeff9483311650896c811527bd3a5cc29ebd2e64af080957f639c7a"
+    },
+    "scripts/run_scopepair_fhir.py": {
+      "bytes": 23373,
+      "sha256": "7f20104b7fb49aa26253168600d7703311f2ff24dba9a11d8e4c82846ac7585c"
+    },
+    "scripts/run_scopepair_medadmin.py": {
+      "bytes": 17141,
+      "sha256": "5c1833e900f2a65bb966a3159cf59c3245b1bb3af54ed0d85807caafda2aa8ba"
+    },
+    "scripts/run_scopepair_prompt_all6.py": {
+      "bytes": 4561,
+      "sha256": "84c6ab1aabe21abd66210138d7fc116dcd47263c40b40523489c1984d75525f2"
+    },
+    "scripts/scopebench/__init__.py": {
+      "bytes": 69,
+      "sha256": "a0d5b8266fa3f5f15cb41eb20263157d4406efcaa7648184ba7c2571b75e63e2"
+    },
+    "scripts/scopebench/adjudication_analysis.py": {
+      "bytes": 13694,
+      "sha256": "3000318ee964b9c4ebb3114680597356f98eea77f24895c8bce6bb60340549d6"
+    },
+    "scripts/scopebench/agreement_check.py": {
+      "bytes": 3014,
+      "sha256": "0b43f40e2e9da25563adf5706c27ea1e749cca1c4277439211886d7fc85d4da8"
+    },
+    "scripts/scopebench/analyze_panel.py": {
+      "bytes": 29721,
+      "sha256": "d1babc5131c3dc78277d5e5e34ba2d319f4963adfcb589a5aedd6110dd52e0cd"
+    },
+    "scripts/scopebench/analyze_sensitivity.py": {
+      "bytes": 10014,
+      "sha256": "ef0c3174cca5ca1602f141ea3d4e00e26507e002c740237cf111cb8796bf4bfe"
+    },
+    "scripts/scopebench/analyze_tier.py": {
+      "bytes": 8919,
+      "sha256": "9dfec51122499c6b6ff5abcb017be8faeda5db4c24d864f957bd3894978e769a"
+    },
+    "scripts/scopebench/build_adjudication_packets.py": {
+      "bytes": 30354,
+      "sha256": "967f01afc8122bc401baa595cf9fce51d9f7a9d9e1bddc947b88684aaf7f9951"
+    },
+    "scripts/scopebench/build_tiera.py": {
+      "bytes": 11365,
+      "sha256": "92f065ff9bd6df97c6775c2f6b38dac2dc4c7a52da87642224b84f5a11bf5808"
+    },
+    "scripts/scopebench/build_tierb.py": {
+      "bytes": 6328,
+      "sha256": "798f7cd28fb19cc34d6887c5ca7150ab59dd2b52341b51b0384a45c1125c9854"
+    },
+    "scripts/scopebench/build_tierc_fhiragentbench.py": {
+      "bytes": 9373,
+      "sha256": "525a97bb1b4e724cc027c59641056b569a181ff1a23d5b04181f3d87877d4c33"
+    },
+    "scripts/scopebench/build_tierc_frontier_subsample.py": {
+      "bytes": 5520,
+      "sha256": "44a7c1b5dd308a51965a71615019346d7b6ed942376568b9e4691ffee850af52"
+    },
+    "scripts/scopebench/build_tierc_medagentbench.py": {
+      "bytes": 3838,
+      "sha256": "226baad909e81ece8189909c12f29452a9f73a085debd366dc908551e916d93c"
+    },
+    "scripts/scopebench/check_runs_complete.py": {
+      "bytes": 9675,
+      "sha256": "83259b7a6759f1e467f4ce159357e35a0b7f23bc6d5a5d64344f109cbebbe88f"
+    },
+    "scripts/scopebench/compare_completions.py": {
+      "bytes": 2322,
+      "sha256": "ece3c304a2d74bf35d42c5cd04982e3238c63915289afec1a2f05e22bbe925d1"
+    },
+    "scripts/scopebench/compare_to_frozen.py": {
+      "bytes": 3301,
+      "sha256": "e87564e87a703fef3d5b35e1dfea0d020f7c149a31aa1e483333dab7d2beca5a"
+    },
+    "scripts/scopebench/derive_late_filter.py": {
+      "bytes": 5156,
+      "sha256": "cab50c7087f16cfd95cea612d759ca6a0c3a41f08524f158866b1d3280d150db"
+    },
+    "scripts/scopebench/freeze_tier.py": {
+      "bytes": 8324,
+      "sha256": "bc9f0d7bb3a293504e24264f9b4cea527a8ea8bdf8cfcde32ad68603994bf4a3"
+    },
+    "scripts/scopebench/frontier_pending.py": {
+      "bytes": 2524,
+      "sha256": "21bb4eed57a011b908b1346c5ff0ef6381417b0642e65408ba79f1ac5ba14c99"
+    },
+    "scripts/scopebench/generate_tables.py": {
+      "bytes": 20592,
+      "sha256": "9cd8dd3d091cc72e245ad9c1fe492051ec1424f2e054b4922b4ff7131f63d280"
+    },
+    "scripts/scopebench/ingest_ccda_duckdb.py": {
+      "bytes": 5625,
+      "sha256": "279d62d1c32f95a5d31bf443528f5d5f7b20dbb3475dd012ec99216f09e0fee5"
+    },
+    "scripts/scopebench/ingest_mimic_duckdb.py": {
+      "bytes": 6053,
+      "sha256": "8eab2724a488899bd9007b0411c472f45e1ba2062d602522a34df4f297ae9495"
+    },
+    "scripts/scopebench/make_gap_figure.py": {
+      "bytes": 6113,
+      "sha256": "f16dce720f68b7437667e826bdabccebd45673f33432dff593180400b769592c"
+    },
+    "scripts/scopebench/phi_scan.py": {
+      "bytes": 4198,
+      "sha256": "55aca4e8444371bf9cd5d4d76f090399a3415ed4575222b72ca033d00f693b1c"
+    },
+    "scripts/scopebench/relabel_medagent_status.py": {
+      "bytes": 3110,
+      "sha256": "87cc7181b5530574bdeb99198eaf42084a89d8daac03165ebb4bea460ec88cae"
+    },
+    "scripts/scopebench/rescore_variant.py": {
+      "bytes": 4338,
+      "sha256": "29dbeac41ba72bd9abdc40d1399b982536906cb1723e88e899a4fa9556b08d7a"
+    },
+    "scripts/scopebench/run_config.py": {
+      "bytes": 9467,
+      "sha256": "2d24058e010a23f4202079380e8f5b2b584da562448788ddca19e5befeb8e93c"
+    },
+    "scripts/scopebench/run_tierc.py": {
+      "bytes": 6362,
+      "sha256": "40c43d7077286cb3560a74f8b88a17c2dab4b10dbc9b605b16d435de8c1fe5c0"
+    },
+    "scripts/scopebench/run_tierc_medagent.py": {
+      "bytes": 11488,
+      "sha256": "23bb17917b3d43e01a4ae16cdff203c7d7deb18f8f61873f79a410b61d7dad75"
+    },
+    "scripts/scopebench/summarize_run.py": {
+      "bytes": 2687,
+      "sha256": "5983b0a5315f642869a2613e925b7fb32d9183d56f2c6064fe6502eaa57ff231"
+    },
+    "scripts/scopebench/validate_tierc_skills.py": {
+      "bytes": 5317,
+      "sha256": "dd21a3d17795679a17ad809570da40e8935079751b7be55120993e9ff2b8f85a"
+    },
+    "scripts/summarize_scopepair_errors.py": {
+      "bytes": 5828,
+      "sha256": "6e818cc4e6f8880600942ab37922d5107be622008da6c2e38e63b903d5a8a1af"
+    },
+    "scripts/summarize_scopepair_medadmin_errors.py": {
+      "bytes": 3733,
+      "sha256": "db5f282175e790b76428d7b489e536f59b40e9abd6f5835faa8c057baca161ff"
+    },
+    "scripts/verify_paper_claims.py": {
+      "bytes": 12333,
+      "sha256": "739ab5b81a0375da45e33c18cfcd77051d3fb0bf2c0a988c0873aafd1b562620"
+    },
+    "tests/scopebench/test_claude_batch.py": {
+      "bytes": 8089,
+      "sha256": "05ee52ada406e2f925a1bc00a8c22f0b50bd943468c806b3133c5feb8b148a95"
+    },
+    "tests/scopebench/test_context_guard.py": {
+      "bytes": 13077,
+      "sha256": "42015bb1dac01697a49e46d4c1229678bd7a774dec93c8f12aaf2ec3da62f895"
+    },
+    "tests/scopebench/test_core.py": {
+      "bytes": 8153,
+      "sha256": "ecd38dd4003f2c030b6bfe019fe06edb61c087c78798e83dd602181db93eb807"
+    },
+    "tests/scopebench/test_differential.py": {
+      "bytes": 7501,
+      "sha256": "75f3af6ac48a41ba13a66aa81f157b78a70a30f5290f36bec668fa4d794c001d"
+    },
+    "tests/scopebench/test_late_filter.py": {
+      "bytes": 2299,
+      "sha256": "36a4b03232035312945ec4058d1f22b575eddaf860db16f0406c37539866655e"
+    },
+    "tests/scopebench/test_medagent_loop.py": {
+      "bytes": 11961,
+      "sha256": "3d359511629ca7f6b4e999043d852bfbb582c223eb1fb5372418a04e4c73e485"
+    },
+    "tests/scopebench/test_medagent_template_merge.py": {
+      "bytes": 3343,
+      "sha256": "fbf0d59e4bca6195434b430860fef96548b08bed4f81735689b4ceaaaf2e92e0"
+    },
+    "tests/scopebench/test_model_path_remap.py": {
+      "bytes": 1591,
+      "sha256": "1f71f30eb97979f012c05cf3a1331b0cffb6df031467cae50fedb8e9b859e149"
+    },
+    "tests/scopebench/test_oracle_unit.py": {
+      "bytes": 19976,
+      "sha256": "5d49cf364a337035ac653a462b9315eab4110629d1419cb7dfdcf961d3350e6b"
+    },
+    "tests/scopebench/test_policy_engines.py": {
+      "bytes": 1955,
+      "sha256": "cae3f464356a080481f0d5928d0343dea5e7419d1930c1caab860c673143c85c"
+    },
+    "tests/scopebench/test_scopepair_replay.py": {
+      "bytes": 5604,
+      "sha256": "54dfe972e81f0e26eea898a4a35496671964515f76f93a34012c126e10ada0a6"
+    },
+    "tests/scopebench/test_sensitivity.py": {
+      "bytes": 7670,
+      "sha256": "0791545ccf656f54df7a00578f6fe6b730665340e05bd29b79a76f174b240b7d"
+    },
+    "tests/scopebench/test_skills_unit.py": {
+      "bytes": 23740,
+      "sha256": "d6eb9df33318e4d28fb321a6c38f40af85475e89c6e3c30fd850987590c02cb2"
+    },
+    "tests/scopebench/test_tierA.py": {
+      "bytes": 6056,
+      "sha256": "90a015a2c2761719c67ef6fa7029f446f476c90b51fe30b4d7245ee371093063"
+    },
+    "tests/scopebench/test_tierb_manifest.py": {
+      "bytes": 3767,
+      "sha256": "f421c3941d9acd4aee8f3f8f90dd81b39256ec9ffe4b2a2f995498b785065a47"
+    },
+    "tests/scopebench/test_tierc_configs.py": {
+      "bytes": 1414,
+      "sha256": "886c2dcbd8eceea75d3c15b2007e10de20a548120193b8c64796e07f705becd0"
+    },
+    "tests/scopebench/test_tierc_loop.py": {
+      "bytes": 11075,
+      "sha256": "da144bd019ea4d68bef9463da1f95a9e8042eb218cc055532cd5131ac93630a6"
+    },
+    "tests/scopebench/test_tierc_skill_mapping.py": {
+      "bytes": 2987,
+      "sha256": "bd512a034b2eccca5df0f8657e418e5a5c0a46f696b3c12bcc0d4dcfdbaf24ce"
+    },
+    "tests/scopebench/test_tools_loop.py": {
+      "bytes": 4105,
+      "sha256": "12d61bf27c7f4d94c5eedead52277a0358f5482da82fec19cf7f893d33fb8e36"
+    },
+    "tests/test_fhir_benchmark_core.py": {
+      "bytes": 4921,
+      "sha256": "3a20dcd4c5148124ce63cb34381b8a919b597fd34a8fd379c4141c445ea9004c"
+    },
+    "tests/test_medagentbench_runner.py": {
+      "bytes": 1490,
+      "sha256": "c384d970f97a03d8ba04ad3a604f154f13f1e57086ab8c424ae438753de5f13c"
+    },
+    "tests/test_model_panel.py": {
+      "bytes": 3547,
+      "sha256": "aabe599058948f51f8c1981e7e664984e39ec28962cc8bade2c7497b8a93ee39"
+    },
+    "tests/test_public_release.py": {
+      "bytes": 1258,
+      "sha256": "c22de8eed0782334390485e55601df2b32179258974fce482942ea1c2539f217"
+    },
+    "tests/test_scopepair_fhir.py": {
+      "bytes": 3856,
+      "sha256": "6ad6d648d2971c40129d3a0ecfe53d4f4ee4f5523f2b7e452521aa52f62d3d5c"
+    },
+    "tests/test_scopepair_medadmin.py": {
+      "bytes": 2606,
+      "sha256": "1589c8039b9e6f75c0a9ff48f0a04552cbcc8acf8bad764fdd3ba9d95ada5b5f"
+    }
+  },
+  "release": "EHR-AgentGuard 0.1.0"
+}

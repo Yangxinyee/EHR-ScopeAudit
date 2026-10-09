@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "Please cite the manuscript and acknowledge the source datasets when using this research code."
+type: software
+title: EHR-AgentGuard
+version: 0.1.0
+authors:
+  - family-names: Yang
+    given-names: Xinye
+repository-code: "https://github.com/Yangxinyee/EHR-AgentGuard"
+url: "https://github.com/Yangxinyee/EHR-AgentGuard"
+license:
+  - MIT
+  - CC-BY-4.0
+abstract: "Evidence contracts, access logging, completeness auditing, and typed verification for clinical EHR agents."
