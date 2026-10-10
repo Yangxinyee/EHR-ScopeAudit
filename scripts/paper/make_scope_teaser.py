@@ -42,7 +42,7 @@ def main() -> None:
         "pdf.fonttype": 42,
         "ps.fonttype": 42,
         "svg.fonttype": "none",
-        "svg.hashsalt": "ehr-agentguard-scope-teaser",
+        "svg.hashsalt": "ehr-scopeaudit-scope-teaser",
         "hatch.linewidth": 0.6,
     })
     fig = plt.figure(figsize=(7.1, 2.15), facecolor="white")
@@ -75,7 +75,7 @@ def main() -> None:
     left.text(0.405, 0.35, r"$e_1$", va="center", ha="center", color=palette["scope"])
     left.text(0.465, 0.35, "+", va="center", ha="center")
     left.text(0.525, 0.35, r"$e_2$", va="center", ha="center", color=palette["invalid"])
-    left.text(0.015, 0.15, "EHR-AgentGuard", va="center", color=palette["scope"])
+    left.text(0.015, 0.15, "EHR-ScopeAudit", va="center", color=palette["scope"])
     left.text(0.47, 0.15, r"$e_1$", va="center", ha="center", color=palette["scope"])
     for y in (0.35, 0.15):
         left.text(0.71, y, r"$e_1$", va="center", ha="center", color=palette["scope"])

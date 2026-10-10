@@ -1,1 +1,1 @@
-"""Reproduction utilities shipped with EHR-AgentGuard."""
+"""Reproduction utilities shipped with EHR-ScopeAudit."""

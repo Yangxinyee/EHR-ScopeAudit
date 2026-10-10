@@ -36,7 +36,7 @@ SYSTEMS = (
     ("all_six", "All-six prompt", "baseline_fill", "secondary", ""),
     ("scope_first", "Scope-first", "scope_fill", "scope", ""),
     ("guard_refill", "Guard-refill", "audit", "audit", ""),
-    ("clinehr_os", "EHR-AgentGuard (verified)", "valid_fill", "valid", "///"),
+    ("clinehr_os", "EHR-ScopeAudit (verified)", "valid_fill", "valid", "///"),
 )
 
 
@@ -154,7 +154,7 @@ def main() -> None:
     manifest = {
         "metric": "Exact structured answer correctness and no out-of-contract citations",
         "uncertainty": "95% patient-cluster bootstrap intervals from frozen summary CSVs",
-        "scope": "Separate ScopePair diagnostic tests; not pooled into ScopeBench tier totals",
+        "scope": "Separate ScopePair diagnostic tests; not pooled into SPOILER tier totals",
         "full_result": "Final verified protocol output, including deterministic fallback",
         "palette": palette,
         "sources": [{"path": str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path),

@@ -104,7 +104,7 @@ def main():
             print(f"FAIL {name}: {kind}")
         raise SystemExit(1)
     if args.write:
-        MANIFEST.write_text(json.dumps({"release": "EHR-AgentGuard 0.1.0", "audit": "Explicit allowlist, license review, pattern scan, and dataset integrity checks.",
+        MANIFEST.write_text(json.dumps({"release": "EHR-ScopeAudit 0.1.1", "audit": "Explicit allowlist, license review, pattern scan, and dataset integrity checks.",
                                        "excluded": ["restricted clinical data and derivatives", "patient-level model outputs", "institutional records and salts", "credentials and infrastructure", "old Git history and manuscript backups", "model weights and third-party datasets"],
                                        "files": files}, indent=2, sort_keys=True) + "\n")
     print(f"PASS: {len(files)} publication files; only the two approved ODbL task databases; no detected secret or author-machine-path patterns")

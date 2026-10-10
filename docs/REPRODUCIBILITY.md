@@ -1,4 +1,4 @@
-# Reproducing EHR-AgentGuard
+# Reproducing EHR-ScopeAudit
 
 ## What works from a fresh clone
 
@@ -13,7 +13,7 @@ python -m pytest -q
 python scripts/audit_release.py --verify
 ```
 
-Tests that require institutional data, locally reconstructed ScopeBench
+Tests that require institutional data, locally reconstructed SPOILER
 manifests, complete model trajectories, or upstream FHIR servers are skipped
 when those resources are absent. A skipped integration check is not evidence
 that a model inference experiment has been rerun.
@@ -55,7 +55,7 @@ python scripts/run_scopepair_fhir.py \
   --model /path/to/model --output-dir runs/labtrend --split test
 ```
 
-Use `--help` for manifest and decoding options. For the ScopeBench harness,
+Use `--help` for manifest and decoding options. For the SPOILER harness,
 local SGLang HTTP and local Hugging Face backends are provided. The optional
 Claude file-queue adapter requires a separately operated responder that writes
 completion files. Its input-token counts are character-based estimates. No
@@ -111,7 +111,7 @@ git -C external_benchmarks/MedAgentBench checkout 99260117137b09f04837a8c18d18a1
 ```
 
 Follow upstream instructions for their tasks, Docker/HAPI-FHIR services, and
-data. The local adapters and ScopeBench Tier-C builders are provided here.
+data. The local adapters and SPOILER Tier-C builders are provided here.
 Patient maps, reconstructed manifests, native FHIR server records, and raw
 task trajectories are generated locally rather than bundled in this release.
 

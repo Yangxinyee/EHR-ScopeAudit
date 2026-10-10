@@ -29,7 +29,7 @@ commands are in `../../docs/REPRODUCIBILITY.md`.
 
 ## Interpretation
 
-This small diagnostic is separate from the ScopeBench three-tier benchmark.
+This small diagnostic is separate from the SPOILER three-tier benchmark.
 It supports testing the evidence-selection and structured-computation steps.
 It does not establish representative clinical prevalence or clinical utility.
 The two families' five-checkpoint comparison is distinct from the six-checkpoint

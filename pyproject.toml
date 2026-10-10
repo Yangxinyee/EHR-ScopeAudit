@@ -3,9 +3,9 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ehr-agentguard"
-version = "0.1.0"
-description = "Executable evidence contracts, access logging, and verification for clinical EHR agents"
+name = "ehr-scopeaudit"
+version = "0.1.1"
+description = "Scope auditing for clinical EHR agents: evidence contracts, access logging, and verification"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT AND CC-BY-4.0"
@@ -20,7 +20,7 @@ retrieval = ["rank-bm25>=0.2.2", "sentence-transformers>=3"]
 local-model = ["torch>=2.4", "transformers>=4.46", "accelerate>=1"]
 
 [project.urls]
-Repository = "https://github.com/Yangxinyee/EHR-AgentGuard"
+Repository = "https://github.com/Yangxinyee/EHR-ScopeAudit"
 
 [tool.setuptools.packages.find]
 include = ["scopebench*", "scripts*"]

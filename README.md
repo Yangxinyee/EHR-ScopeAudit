@@ -1,12 +1,12 @@
-# EHR-AgentGuard
+# EHR-ScopeAudit
 
-**Executable evidence contracts for clinical EHR agents.** EHR-AgentGuard
-filters evidence before retrieval, logs what an agent accesses, checks cited
+**Scope auditing for clinical EHR agents.** EHR-ScopeAudit executes evidence
+contracts: it filters evidence before retrieval, logs what an agent accesses, checks cited
 evidence for scope and completeness, and verifies covered operations with
 typed ChartSkills.
 
-Research code for **Right Answer, Wrong Scope: Enforcing Evidence Contracts
-for Clinical EHR Agents**, by Xinye Yang, Yuli Wang, Cheng Ting Lin, and
+Research code for **Right Answer, Wrong Scope: Auditing the Evidence Paths
+of Clinical EHR Agents**, by Xinye Yang, Yuli Wang, Cheng Ting Lin, and
 Harrison Bai. The manuscript's clinician study is planned future work;
 this release contains no clinician evaluation results.
 
@@ -23,8 +23,8 @@ Python 3.11 or later. A CPU is sufficient for the synthetic demo, tests, and
 aggregate figure generation.
 
 ```bash
-git clone https://github.com/Yangxinyee/EHR-AgentGuard.git
-cd EHR-AgentGuard
+git clone https://github.com/Yangxinyee/EHR-ScopeAudit.git
+cd EHR-ScopeAudit
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e ".[test,analysis]"
@@ -55,7 +55,11 @@ and are separate from the paper's measured model results.
 
 The Python package name `scopebench` and historical configuration keys such
 as `clinehr_os` remain stable to preserve the frozen experiment identities.
-The displayed framework name is EHR-AgentGuard.
+The displayed framework name is EHR-ScopeAudit and the benchmark is **SPOILER**
+(Scope Pitfalls Of Information Leakage in EHR Retrieval). Internal docstrings
+and prompt texts keep the development names, so the frozen prompt hashes still
+verify. The repository was renamed from EHR-AgentGuard on 2026-10-10; the old
+URL redirects here.
 
 The initial release passes **124 CPU tests**, with 33 checks skipped because
 their external resources are unavailable. See [docs/VALIDATION.md](docs/VALIDATION.md)
@@ -65,7 +69,7 @@ for the fresh-environment checks and recorded dependency versions.
 
 LabTrend and MedDose are separate diagnostic experiments, each containing
 80 cases: 16 development cases and 64 test cases, with two scopes per case.
-Their five-checkpoint panel is distinct from ScopeBench's six-checkpoint
+Their five-checkpoint panel is distinct from SPOILER's six-checkpoint
 MIMIC-IV panel. See the two data cards and [DATA_LICENSE_NOTICE.md](DATA_LICENSE_NOTICE.md).
 
 ```bash

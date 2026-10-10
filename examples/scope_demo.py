@@ -39,7 +39,7 @@ def demonstrate():
                 gold=gold, required_ids=tuple(e.id for e in earlier))
     case = Case(case_id=task.case_id, patient=patient, index_event={"index_time": index}, evidence=evidence)
     results = {}
-    with tempfile.TemporaryDirectory(prefix="ehr-agentguard-synthetic-") as directory:
+    with tempfile.TemporaryDirectory(prefix="ehr-scopeaudit-synthetic-") as directory:
         for name in ("prompt_only", "scope_aware", "full"):
             destination = Path(directory) / name
             spec = RunSpec(CONFIGS[name], TemporalNearestRetriever(), k=3, skills=REFERENCE_SKILLS)

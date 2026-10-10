@@ -1,1 +1,1 @@
-"""Synthetic EHR-AgentGuard examples."""
+"""Synthetic EHR-ScopeAudit examples."""

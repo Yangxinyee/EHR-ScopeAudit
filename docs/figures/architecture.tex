@@ -105,10 +105,10 @@
 
 \draw[fill=lanefill,draw=scopec!35,rounded corners=3pt,line width=0.5pt]
   (4.66,1.51) rectangle (17.6,4.56);
-\node[label,stage,text=scopec] at (4.89,4.32) {EHR-AgentGuard};
+\node[label,stage,text=scopec] at (4.89,4.32) {EHR-ScopeAudit};
 \node[stage,text=scopec] at (5.5,3.92) {Scope filter};
 \node[stage] at (10.3,3.92) {Agent};
-\node[stage,text=auditc] at (12.8,3.92) {ScopeGuard};
+\node[stage,text=auditc] at (12.8,3.92) {Scope auditor};
 \node[stage] at (15.6,3.92) {Answer};
 % The only solid-colour module: filtering before the agent is the focal point.
 \fill[scopec,rounded corners=1pt] (4.99,3.48) -- (6.01,3.48) --
@@ -147,7 +147,7 @@
 \foreach \x/\heading in {4.55/Correctness,7.35/Completeness,10.15/Access scope,12.95/Citation scope,15.75/Auditability}
   \node[inner sep=0,font=\sffamily\fontsize{8}{9.4}\selectfont\bfseries] at (\x,0.98) {\heading};
 \node[label] at (0,0.52) {Prompt-only};
-\node[label,text=scopec] at (0,0.07) {EHR-AgentGuard};
+\node[label,text=scopec] at (0,0.07) {EHR-ScopeAudit};
 \foreach \x/\mark in {4.55/\pass,7.35/\fail,10.15/\fail,12.95/\fail,15.75/\pass}
   \node[font=\fontsize{10}{11}\selectfont,inner sep=0] at (\x,0.52) {\mark};
 \foreach \x in {4.55,7.35,10.15,12.95,15.75}

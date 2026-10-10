@@ -3,7 +3,7 @@
   "source_data": "results/paper/macros.json",
   "source_sha256": "507992749d5820fa82acf0b0bc4a725382beb9408f64d4cd57486379fd1f7046",
   "palette_sha256": "5dae639754dbb8f56591b96862ff08e4560a97459391ae3709b93ded8ea95c69",
-  "generator_sha256": "1b0dca6fbfc8efa7ec6507089bdab90b0bde66339ac6f5c3c1a38e67d8f3b0e4",
+  "generator_sha256": "ccfe6483a54ffdbd26602d4433838d7a78289cde9a7efba0e95aa7e0eb107074",
   "values": {
     "B.exposed": 80.6,
     "B.div.prompt_only": 55.2,

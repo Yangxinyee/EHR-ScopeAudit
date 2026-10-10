@@ -887,48 +887,48 @@ L 492.769924 47.07883
   </g>
   <g id="legend_1">
    <g id="patch_48">
-    <path d="M 74.725625 168.632125 
-L 89.125625 168.632125 
-L 89.125625 163.032125 
-L 74.725625 163.032125 
+    <path d="M 76 168.632125 
+L 90.4 168.632125 
+L 90.4 163.032125 
+L 76 163.032125 
 z
 " style="fill: #c2c8d0; stroke: #626c76; stroke-width: 0.55; stroke-linejoin: miter"/>
    </g>
    <g id="text_21">
-    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="93.525625" y="168.632125" transform="rotate(-0 93.525625 168.632125)">All-six prompt</text>
+    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="94.8" y="168.632125" transform="rotate(-0 94.8 168.632125)">All-six prompt</text>
    </g>
    <g id="patch_49">
-    <path d="M 161.490625 168.632125 
-L 175.890625 168.632125 
-L 175.890625 163.032125 
-L 161.490625 163.032125 
+    <path d="M 162.765 168.632125 
+L 177.165 168.632125 
+L 177.165 163.032125 
+L 162.765 163.032125 
 z
 " style="fill: #91aecd; stroke: #004488; stroke-width: 0.55; stroke-linejoin: miter"/>
    </g>
    <g id="text_22">
-    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="180.290625" y="168.632125" transform="rotate(-0 180.290625 168.632125)">Scope-first</text>
+    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="181.565" y="168.632125" transform="rotate(-0 181.565 168.632125)">Scope-first</text>
    </g>
    <g id="patch_50">
-    <path d="M 235.581875 168.632125 
-L 249.981875 168.632125 
-L 249.981875 163.032125 
-L 235.581875 163.032125 
+    <path d="M 236.85625 168.632125 
+L 251.25625 168.632125 
+L 251.25625 163.032125 
+L 236.85625 163.032125 
 z
 " style="fill: #55616d; stroke: #55616d; stroke-width: 0.55; stroke-linejoin: miter"/>
    </g>
    <g id="text_23">
-    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="254.381875" y="168.632125" transform="rotate(-0 254.381875 168.632125)">Guard-refill</text>
+    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="255.65625" y="168.632125" transform="rotate(-0 255.65625 168.632125)">Guard-refill</text>
    </g>
    <g id="patch_51">
-    <path d="M 311.585625 168.632125 
-L 325.985625 168.632125 
-L 325.985625 163.032125 
-L 311.585625 163.032125 
+    <path d="M 312.86 168.632125 
+L 327.26 168.632125 
+L 327.26 163.032125 
+L 312.86 163.032125 
 z
 " style="fill: url(#h616362efcf); stroke: #004488; stroke-width: 0.55; stroke-linejoin: miter"/>
    </g>
    <g id="text_24">
-    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="330.385625" y="168.632125" transform="rotate(-0 330.385625 168.632125)">EHR-AgentGuard (verified)</text>
+    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="331.66" y="168.632125" transform="rotate(-0 331.66 168.632125)">EHR-ScopeAudit (verified)</text>
    </g>
   </g>
  </g>

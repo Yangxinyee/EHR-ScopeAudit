@@ -87,7 +87,7 @@ def main() -> None:
         ax.set_axisbelow(True)
     axes[1].set_xlabel("Percent of tasks", fontsize=7, color=INK2, labelpad=2)
     handles = [Line2D([], [], marker="o", ls="", mfc="white", mec=LIGHT, mew=1.1, ms=4.6, label="prompt-only"),
-               Line2D([], [], marker="o", ls="", mfc=DARK, mec=DARK, ms=4.6, label="full EHR-AgentGuard")]
+               Line2D([], [], marker="o", ls="", mfc=DARK, mec=DARK, ms=4.6, label="full EHR-ScopeAudit")]
     fig.legend(handles=handles, loc="upper right", bbox_to_anchor=(1.0, 1.0), ncol=2, fontsize=6.5, frameon=False, handletextpad=0.4, columnspacing=1.2, borderaxespad=0.2)
     fig.subplots_adjust(left=0.255, right=0.975, top=0.895, bottom=0.13, hspace=0.42)   # left margin holds the checkpoint names
     args.out.parent.mkdir(parents=True, exist_ok=True)
