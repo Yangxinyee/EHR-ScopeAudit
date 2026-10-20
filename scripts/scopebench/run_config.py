@@ -12,6 +12,7 @@ Examples
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -105,6 +106,8 @@ def main() -> None:
     p.add_argument("--max-turns", type=int, default=8)
     p.add_argument("--mask", default=None, choices=[None, "cited_admissible", "uncited_accessed"])
     p.add_argument("--mask-source", type=Path, default=None, help="run directory whose citations/access define the masking")
+    p.add_argument("--inject", default=None, choices=[None, "future", "inscope"], help="DEV-35 exposure injection arm")
+    p.add_argument("--inject-ids", type=Path, default=None, help="DEV-35: JSON {task_id: {arm: [evidence ids]}} fixed before any run")
     p.add_argument("--out-dir", type=Path, required=True)
     p.add_argument("--retry-errors", action="store_true", help="on resume, drop and re-run rows whose generation hit an infrastructure error")
     # sensitivity suite (plan §8.5) and cell labelling (plan §12 gate G7)
@@ -113,12 +116,23 @@ def main() -> None:
     p.add_argument("--temperature", type=float, default=0.0)
     p.add_argument("--sampling-seed", type=int, default=None, help="decoding seed sent to the backend (default: --seed)")
     p.add_argument("--cell-kind", default="formal", choices=["formal", "sensitivity", "diagnostic", "pilot", "agreement"])
+    p.add_argument("--task-ids", type=Path, default=None, help="DEV-34: JSON list of task ids to run; recorded by hash in the run metadata")
     p.add_argument("--stratified-subsample", type=int, default=None, help="D7: N tasks, equal share per (task type, scope) stratum, deterministic (--seed)")
     p.add_argument("--retrieval-cache", type=Path, default=None, help="directory memoizing evidence selections per task/contract/retriever (DEV-4); omit = no cache")
     args = p.parse_args()
 
     tasks, cases = load(args.loader, args.manifest, args.split)
     tasks = sorted(tasks, key=lambda t: (t.case_id, t.task_id))
+    task_ids_sha256 = None
+    if args.task_ids:
+        import hashlib
+
+        keep = set(json.loads(args.task_ids.read_text()))
+        task_ids_sha256 = hashlib.sha256(args.task_ids.read_bytes()).hexdigest()
+        missing = keep - {t.task_id for t in tasks}
+        if missing:
+            raise SystemExit(f"--task-ids: {len(missing)} ids not in the manifest")
+        tasks = [t for t in tasks if t.task_id in keep]
     if args.max_tasks:
         tasks = tasks[: args.max_tasks]
     if args.stratified_subsample:
@@ -146,6 +160,15 @@ def main() -> None:
         from scopebench.schema import read_jsonl
 
         mask_source = {r["task_id"]: r for r in read_jsonl(args.mask_source / "predictions.jsonl")}
+    inject_ids, inject_sha256 = None, None
+    if args.inject:
+        import hashlib
+
+        if args.inject_ids is None:
+            raise SystemExit("--inject needs --inject-ids")
+        inject_ids = json.loads(args.inject_ids.read_text())
+        inject_sha256 = hashlib.sha256(args.inject_ids.read_bytes()).hexdigest()
+        tasks = [t for t in tasks if inject_ids.get(t.task_id, {}).get(args.inject)]   # a task with nothing to inject is the baseline run
     retriever = make_retriever(args)
     cache = None
     if args.retrieval_cache:
@@ -155,13 +178,15 @@ def main() -> None:
         cache = RetrievalCache(args.retrieval_cache, msha[:16] if msha else None, retriever)
     spec = RunSpec(configuration=CONFIGS[args.config], retriever=retriever, k=args.k, pool_k=args.pool_k,
                    skills=make_skills(args.skills), max_tokens_override=args.max_tokens, label=args.label, mask=args.mask, mask_source=mask_source,
-                   repair_wording=args.repair_wording, retrieval_cache=cache)
+                   repair_wording=args.repair_wording, retrieval_cache=cache, inject=args.inject, inject_ids=inject_ids)
     extra_mask = {"mask": args.mask, "mask_source": str(args.mask_source)} if args.mask else {}
     args._tasks, args._cases = tasks, cases
     backend = make_backend(args)
     extra = {"loader": args.loader, "split": args.split, "skills_source": args.skills, "cell_kind": args.cell_kind, "variant": args.variant,
              "repair_wording": args.repair_wording, "temperature": args.temperature, "sampling_seed": args.sampling_seed if args.sampling_seed is not None else args.seed,
-             "retrieval": {"retriever": args.retriever, "k": args.k, "pool_k": args.pool_k, "n_candidates": args.n_candidates, "expand_sections": args.expand_sections}, **extra_mask}
+             "retrieval": {"retriever": args.retriever, "k": args.k, "pool_k": args.pool_k, "n_candidates": args.n_candidates, "expand_sections": args.expand_sections}, **extra_mask,
+             **({"task_ids_file": str(args.task_ids), "task_ids_sha256": task_ids_sha256} if args.task_ids else {}),
+             **({"inject": args.inject, "inject_ids_file": str(args.inject_ids), "inject_ids_sha256": inject_sha256} if args.inject else {})}
     if spec.configuration.tools:
         if not args.token_budget:
             raise SystemExit("--token-budget is required for tools configurations")

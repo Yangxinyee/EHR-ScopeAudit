@@ -23,7 +23,7 @@ PATTERNS = {
 }
 BLOCKED_NAMES = {"secret_salt.txt", ".env", "predictions.jsonl", "access_log.jsonl", "stages.jsonl", "ANSWER_KEY.jsonl", "patients.json", "patient_map.json"}
 BLOCKED_PARTS = {".aws", ".gcloud-config", ".docker-config", ".runtime", ".vendor", ".claude", ".codex", ".agents", "external_benchmarks", "local_data", "models", "runs", "outputs", "revisions", "batches"}
-BINARY_ASSETS = {"docs/figures/" + name for name in ("architecture.pdf", "architecture.png", "scope_teaser.pdf", "scope_teaser.png", "gap.pdf", "operation_results.pdf", "operation_results.png")}
+BINARY_ASSETS = {"docs/figures/" + name for name in ("architecture.pdf", "architecture.png", "scope_teaser.pdf", "scope_teaser.png", "gap.pdf", "operation_results.pdf", "operation_results.png", "oracle_gap.pdf")}
 
 
 def publication_files():

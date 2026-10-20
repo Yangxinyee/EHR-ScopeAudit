@@ -20,7 +20,7 @@ under **CC BY 4.0**:
 - `scripts/scopebench/build_tierc_fhiragentbench.py`
 - `scripts/scopebench/validate_tierc_skills.py`
 - `scopebench/tasktypes_tierc.py`
-- `scopebench/tierc/agent.py`, `contracts.py`, `store.py`, `skills.py`
+- `scopebench/tierc/agent.py`, `contracts.py`, `store.py`, `skills.py`, `plans.py`
 
 Changes include local evaluation adapters, task contracts, logging around
 retrieval and tool calls, scope filtering, evidence auditing, typed skill
@@ -40,7 +40,8 @@ The full upstream notice is retained in `licenses/MedAgentBench-MIT.txt`.
 MedAgentBench-related adaptations appear in
 `scripts/run_medagentbench_corrected.py`,
 `scripts/scopebench/build_tierc_medagentbench.py`,
-`scripts/scopebench/run_tierc_medagent.py`, and `scopebench/tierc/medagent.py`.
+`scripts/scopebench/run_tierc_medagent.py`, `scripts/scopebench/rescore_medagent_dev37.py`,
+`scopebench/tierc/medagent.py`, and `scopebench/tierc/medagent_plans.py`.
 Changes include local-model routing, logged FHIR access, evidence contracts,
 scope enforcement, repair and verification, message-template compatibility,
 and resumable execution. The original task server and task data are obtained

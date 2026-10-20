@@ -5,32 +5,38 @@ Configuration & Ans. & Ev.C & A-L & C-L & Aud. \\
 \midrule
 \multicolumn{6}{@{}l}{\textit{\tierB{} (MIMIC-IV)}} \\
 \quad Prompt-only              & 42.4 & 53.9 & 19.4 & 73.1 & 92.9 \\
-\quad Late filtering           & 43.1 & 53.9 & 19.4 & 80.5 & 80.5 \\
-\quad Wrong-basis scope        & 45.0 & 59.7 & 84.8 & 88.7 & 93.4 \\
 \quad Scope-aware retrieval    & 46.6 & 62.2 & 100.0 & 94.2 & 94.2 \\
 \quad $+$ evidence audit       & 55.6 & 81.1 & 100.0 & 96.0 & 96.0 \\
 \quad $+$ skill grounding      & \textbf{76.3} & \textbf{96.8} & \textbf{100.0} & \textbf{97.9} & \textbf{97.9} \\
+\addlinespace[1.5pt]
+\quad Late filtering           & 43.1 & 53.9 & 19.4 & 80.5 & 80.5 \\
+\quad Wrong-basis scope        & 45.0 & 59.7 & 84.8 & 88.7 & 93.4 \\
+\addlinespace[1.5pt]
 \quad Token-matched ctrl.      & 36.7 & 48.3 & 29.0 & 61.9 & 87.2 \\
 \quad High-compute ctrl.       & 36.9 & 48.7 & 28.7 & 62.0 & 87.3 \\
 \addlinespace[2pt]
 \multicolumn{6}{@{}l}{\textit{\tierA{} (CCDA)}} \\
 \quad Prompt-only              & 34.4 & 43.5 & 37.2 & 65.0 & 88.6 \\
-\quad Late filtering           & 34.5 & 43.5 & 37.2 & 76.9 & 76.9 \\
-\quad Wrong-basis scope        & 46.8 & 54.0 & 99.3 & 91.9 & 92.0 \\
 \quad Scope-aware retrieval    & 47.0 & 54.2 & 100.0 & 92.2 & 92.2 \\
 \quad $+$ evidence audit       & 58.3 & 81.3 & 100.0 & 96.0 & 96.0 \\
 \quad $+$ skill grounding      & \textbf{75.6} & \textbf{90.8} & \textbf{100.0} & \textbf{97.1} & \textbf{97.1} \\
+\addlinespace[1.5pt]
+\quad Late filtering           & 34.5 & 43.5 & 37.2 & 76.9 & 76.9 \\
+\quad Wrong-basis scope        & 46.8 & 54.0 & 99.3 & 91.9 & 92.0 \\
+\addlinespace[1.5pt]
 \quad Token-matched ctrl.      & 30.7 & 40.2 & 42.0 & 59.4 & 85.6 \\
 \quad High-compute ctrl.       & 31.5 & 40.8 & 41.7 & 59.9 & 86.3 \\
 \addlinespace[2pt]
 \multicolumn{6}{@{}l}{\textit{\tierC{} (FHIR-AgentBench)}} \\
-\quad Prompt-only              & 30.6 & 49.5 & 39.9 & 49.1 & 83.0 \\
-\quad Late filtering           & 30.6 & 48.9 & 39.9 & 65.9 & 65.9 \\
-\quad Wrong-basis scope        & 35.8 & 52.9 & 87.7 & 71.3 & 73.8 \\
-\quad Scope-aware retrieval    & 35.3 & 52.9 & 100.0 & 71.8 & 73.8 \\
-\quad $+$ evidence audit       & 37.5 & 81.3 & 100.0 & 73.2 & 76.8 \\
-\quad $+$ skill grounding      & \textbf{65.5} & \textbf{88.5} & \textbf{100.0} & \textbf{79.2} & \textbf{80.9} \\
-\quad Token-matched ctrl.      & 31.0 & 51.4 & 39.9 & 51.4 & 87.0 \\
-\quad High-compute ctrl.       & 30.5 & 49.5 & 39.9 & 49.1 & 82.9 \\
+\quad Prompt-only              & 30.6 & 49.5 & 40.5 & 50.3 & 83.0 \\
+\quad Scope-aware retrieval    & 35.9 & 53.2 & 100.0 & 72.6 & 74.2 \\
+\quad $+$ evidence audit       & 38.1 & 81.5 & 100.0 & 74.3 & 77.3 \\
+\quad $+$ skill grounding      & \textbf{69.9} & \textbf{91.8} & \textbf{100.0} & \textbf{82.1} & \textbf{83.4} \\
+\addlinespace[1.5pt]
+\quad Late filtering           & 30.6 & 48.9 & 40.5 & 65.9 & 65.9 \\
+\quad Wrong-basis scope        & 36.2 & 52.9 & 87.7 & 71.9 & 74.1 \\
+\addlinespace[1.5pt]
+\quad Token-matched ctrl.      & 31.0 & 51.4 & 40.6 & 52.6 & 87.0 \\
+\quad High-compute ctrl.       & 30.5 & 49.5 & 40.5 & 50.2 & 82.9 \\
 \bottomrule
 \end{tabular*}

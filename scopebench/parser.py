@@ -2,8 +2,9 @@
 
 v1 is the frozen ScopePair algorithm, verbatim in semantics (scripts/run_scopepair_fhir.py,
 `extract_json`): strip one leading ```/```json fence and one trailing ``` fence, try the whole
-text, else the substring from the first '{' to the last '}'. Prose after a fenced object makes
-the submission unparseable — that is the frozen rule ("exactly one JSON object and no prose").
+text, else the substring from the first '{' to the last '}'. Prose around a single object is
+therefore ignored; two objects, or none, make the submission unparseable (docstring corrected
+with DEV-38; the code is unchanged).
 """
 
 from __future__ import annotations

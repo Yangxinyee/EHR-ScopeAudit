@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "Please cite the manuscript and acknowledge the source datasets when using this research code."
 type: software
 title: EHR-ScopeAudit
-version: 0.1.1
+version: 0.2.0
 authors:
   - family-names: Yang
     given-names: Xinye

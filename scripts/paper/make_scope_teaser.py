@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Draw an introductory scope counterexample and two frozen Tier-B estimates.
+"""Draw an introductory scope counterexample and the hidden-violation rates of agents that issue their own requests.
 
 The left panel is schematic, not a patient observation. The right panel reads
-the manuscript's frozen macros; it does not rerun analyses or infer new rates.
+the manuscript's frozen macros (AH.*, scripts/scopebench/analyze_agent_hidden.py);
+it does not rerun analyses or infer new rates.
 """
 from __future__ import annotations
 
@@ -28,11 +29,13 @@ def main() -> None:
     palette_path = ROOT / "docs/figures/palette.json"
     values = json.loads(values_path.read_text())
     palette = json.loads(palette_path.read_text())
-    exposed = float(values["B.exposed"])
-    hidden = float(values["B.div.prompt_only"])
-    checkpoints = int(values["B.n_ckpt"])
-    if not 0 <= hidden <= exposed <= 100:
-        raise ValueError("The hidden violation rate must be a subset of the exposure rate")
+    # ICML revision §3.1: agents that issue their own requests (no scope enforcement), all-task denominators
+    rows = [(f"Frontier · FHIR-AgentBench", "AH.F.fhir"), (f"Open-weight mean · FHIR-AgentBench", "AH.open.fhir"),
+            (f"Frontier · MedAgentBench", "AH.F.med")]
+    rates = [(label, float(values[f"{k}.exposed"]), float(values[f"{k}.hidden"])) for label, k in rows]
+    for _, exposed, hidden in rates:
+        if not 0 <= hidden <= exposed <= 100:
+            raise ValueError("The hidden violation rate must be a subset of the exposure rate")
 
     matplotlib.rcParams.update({
         "font.family": "sans-serif",
@@ -42,7 +45,7 @@ def main() -> None:
         "pdf.fonttype": 42,
         "ps.fonttype": 42,
         "svg.fonttype": "none",
-        "svg.hashsalt": "ehr-scopeaudit-scope-teaser",
+        "svg.hashsalt": "ehr-agentguard-scope-teaser",
         "hatch.linewidth": 0.6,
     })
     fig = plt.figure(figsize=(7.1, 2.15), facecolor="white")
@@ -71,6 +74,14 @@ def main() -> None:
     left.text(0.71, 0.515, "Cites", ha="center", fontsize=8.5, color=palette["secondary"])
     left.text(0.915, 0.515, "Answer", ha="center", fontsize=8.5, color=palette["secondary"])
     left.plot((0, 1), (0.475, 0.475), color=palette["rule"], lw=0.7)
+    # Keep the shared chart once; lightly distinguish the two execution paths.
+    left.add_patch(Rectangle((0, 0.265), 1, 0.17,
+                             facecolor=palette["invalid"], alpha=0.075, lw=0))
+    left.add_patch(Rectangle((0, 0.065), 1, 0.17,
+                             facecolor=palette["scope_panel"], lw=0))
+    left.add_patch(Rectangle((0.495, 0.293), 0.062, 0.114,
+                             facecolor="white", edgecolor=palette["invalid"],
+                             lw=0.75, zorder=2))
     left.text(0.015, 0.35, "Unscoped", va="center")
     left.text(0.405, 0.35, r"$e_1$", va="center", ha="center", color=palette["scope"])
     left.text(0.465, 0.35, "+", va="center", ha="center")
@@ -82,28 +93,22 @@ def main() -> None:
         left.text(0.915, y, "Correct", va="center", ha="center")
 
     right.text(0, 1, "(b) What citations miss", va="top", weight="bold")
-    right.text(0, 0.87, f"Prompt-only · {checkpoints}-checkpoint mean", fontsize=8.5, color=palette["secondary"])
-    # Both bars share a 0–100% scale and the all-task denominator. The second
-    # endpoint is the joint event, not a fraction conditional on exposure.
-    bar_start, bar_width = 0.01, 0.86
-    for y, rate, label, hatch in (
-        (0.61, exposed, "Any inadmissible access", None),
-        (0.30, hidden, "With fully admissible citations", "///"),
-    ):
-        right.text(bar_start, y + 0.125, label, fontsize=8.5, va="bottom")
-        right.add_patch(Rectangle((bar_start, y), bar_width, 0.10,
-                                  facecolor=palette["neutral"], lw=0))
-        right.add_patch(Rectangle((bar_start, y), bar_width * rate / 100, 0.10,
-                                  facecolor=palette["invalid"], edgecolor="white",
-                                  hatch=hatch, lw=0))
-        right.text(bar_start + bar_width * rate / 100 + 0.025, y + 0.05,
-                   f"{rate:.1f}%", va="center", fontsize=9, weight="bold", color=palette["invalid"])
-    right.plot((bar_start, bar_start + bar_width), (0.205, 0.205), color=palette["secondary"], lw=0.65)
-    for tick in (0, 50, 100):
-        x = bar_start + bar_width * tick / 100
-        right.plot((x, x), (0.205, 0.18), color=palette["secondary"], lw=0.6)
-        right.text(x, 0.14, str(tick), ha="center", va="center", fontsize=8.2)
-    right.text(bar_start + bar_width / 2, 0.045, "All evaluated tasks (%)", ha="center", va="center", fontsize=8.5)
+    right.text(0, 0.885, "Agents issuing own requests (% of tasks)", fontsize=8.2, color=palette["secondary"])
+    # One bar per setting on a shared 0–100% all-task scale: the solid part is any out-of-scope access, the hatched
+    # part the joint event with fully admissible citations (a subset, not a conditional fraction).
+    bar_start, bar_width = 0.01, 0.64
+    for i, (label, exposed, hidden) in enumerate(rates):
+        y = 0.64 - i * 0.205
+        right.text(bar_start, y + 0.085, label, fontsize=8.0, va="bottom")
+        right.add_patch(Rectangle((bar_start, y), bar_width, 0.075, facecolor=palette["neutral"], lw=0))
+        right.add_patch(Rectangle((bar_start, y), bar_width * exposed / 100, 0.075, facecolor=palette["invalid"], alpha=0.35, lw=0))
+        right.add_patch(Rectangle((bar_start, y), bar_width * hidden / 100, 0.075, facecolor=palette["invalid"], edgecolor="white", hatch="///", lw=0))
+        right.text(bar_start + bar_width * exposed / 100 + 0.02, y + 0.0375, f"{hidden:.1f}% / {exposed:.1f}%",
+                   va="center", fontsize=8.2, weight="bold", color=palette["invalid"])
+    right.add_patch(Rectangle((bar_start, 0.105), 0.035, 0.035, facecolor=palette["invalid"], alpha=0.35, lw=0))
+    right.text(bar_start + 0.05, 0.1225, "any out-of-scope access", va="center", fontsize=7.6)
+    right.add_patch(Rectangle((bar_start, 0.035), 0.035, 0.035, facecolor=palette["invalid"], edgecolor="white", hatch="///", lw=0))
+    right.text(bar_start + 0.05, 0.0525, "… with only admissible citations", va="center", fontsize=7.6)
     fig.add_artist(plt.Line2D((0.593, 0.593), (0.11, 0.88), transform=fig.transFigure,
                              color=palette["rule"], lw=0.7))
 
@@ -118,14 +123,14 @@ def main() -> None:
         "source_sha256": hashlib.sha256(values_path.read_bytes()).hexdigest(),
         "palette_sha256": hashlib.sha256(palette_path.read_bytes()).hexdigest(),
         "generator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-        "values": {"B.exposed": exposed, "B.div.prompt_only": hidden, "B.n_ckpt": checkpoints},
+        "values": {f"{k}.{f}": float(values[f"{k}.{f}"]) for _, k in rows for f in ("exposed", "hidden")},
         "transformation": "Read rounded checkpoint means from frozen manuscript macros; no reanalysis.",
         "caption_claim": "Admissible citations can conceal inadmissible access.",
         "supported_manuscript_claims": [{"claim": "An agent can read a future result, return the correct answer, and cite earlier records that also support it.", "locator": "Introduction, paragraph 2"}],
-        "limitations": ["Panel (a) is illustrative; both records can support the same answer.", "Panel (b) summarizes prompt-only Tier-B checkpoints; it does not measure clinician outcomes or condition on correct answers.", "These rounded descriptive means are shown without uncertainty intervals; detailed results are reported later in the paper."],
+        "limitations": ["Panel (a) is illustrative; both records can support the same answer.", "Panel (b) summarizes unscoped agent loops (frontier and open-weight); it does not measure clinician outcomes or condition on correct answers.", "These rounded descriptive means are shown without uncertainty intervals; detailed results are reported later in the paper."],
     }
     args.out.with_suffix(".json").write_text(json.dumps(trace, indent=2) + "\n")
-    print(f"Wrote {args.out}: {exposed:.1f}% exposed, {hidden:.1f}% hidden, all-task denominator")
+    print(f"Wrote {args.out}: " + "; ".join(f"{l}: {h:.1f}/{e:.1f}%" for l, e, h in rates))
 
 
 if __name__ == "__main__":

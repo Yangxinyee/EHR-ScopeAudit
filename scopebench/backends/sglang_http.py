@@ -76,8 +76,10 @@ class SGLangBackend:
     async def _one_raw(self, client, req) -> Generation:
         body = {
             "text": req.prompt.replace("<image_soft_token>", "<image soft token>"),
+            # DEV-36 addendum 2: the decoding seed reaches the raw path too (the chat path sends `seed`); before this, every
+            # raw-path request at temperature > 0 used the server's seed, so different --seed values gave the same sample
             "sampling_params": {"max_new_tokens": req.max_tokens, "temperature": self.temperature, "top_p": self.top_p, "stop": list(req.stop) or None,
-                                "skip_special_tokens": False},
+                                "skip_special_tokens": False, "sampling_seed": self.seed},
         }
         last_error = None
         for attempt in range(self.max_retries):

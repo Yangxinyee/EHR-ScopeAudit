@@ -21,11 +21,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable
 
-from . import __version__, parser, scoring
+from . import __version__, parser, plans, scoring
 from .backends.base import Backend, Generation, Request
 from .configurations import Configuration
 from .config import ROOT, relpath
-from .guard import GuardReport, check, repair_message
+from .guard import SELF_REVISE_MESSAGE, GuardReport, check, repair_message
 from .predicate import filter_legal, legal, wrong_basis
 from .retrieval import AccessLog, TemporalNearestRetriever
 from .schema import Case, EvidenceObject, Task, read_jsonl
@@ -45,7 +45,7 @@ def sha256_file(path: Path) -> str:
 
 def git_commit() -> str | None:
     try:
-        return subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL).strip()
+        return subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True).strip()
     except Exception:  # noqa: BLE001
         return None
 
@@ -63,6 +63,8 @@ class RunSpec:
     label: str = ""
     repair_wording: str = "a"           # guard.REPAIR_WORDINGS key; "b" = alternative wording (sensitivity, plan §8.5)
     retrieval_cache: Any = None         # RetrievalCache: memoized evidence selection per (task, contract, retriever, mode)
+    inject: str | None = None           # DEV-35 exposure injection: arm name ('future' | 'inscope'), see `_finish_selection`
+    inject_ids: dict[str, dict[str, list[str]]] | None = None   # task_id -> arm -> evidence ids appended to the selection
 
 
 class RetrievalCache:
@@ -125,6 +127,11 @@ class TaskState:
     repaired: bool = False
     replaced: bool = False
     repair_evidence: list[EvidenceObject] = field(default_factory=list)
+    plan_initial: plans.PlanReading | None = None          # DEV-34 plan configurations only
+    plan_final: plans.PlanReading | None = None
+    plan_result_initial: plans.PlanResult | None = None
+    plan_result_final: plans.PlanResult | None = None
+    replacement_rejected: list[str] | None = None          # plan_full: the executed plan's answer failed its own audit
 
 
 def _predicate(cfg: Configuration, task: Task, case: Case):
@@ -208,6 +215,13 @@ def _finish_selection(spec: RunSpec, task: Task, case: Case, access: AccessLog, 
                 raise ValueError(spec.mask)
             chosen = [e for e in chosen if e.id not in remove]
             access.record("masked_out", sorted(remove))
+    if spec.inject and spec.inject_ids is not None:
+        # DEV-35 (experiments/SCOPEBENCH_EXPOSURE_PROTOCOL.md): the arm's records, fixed per task before any run, are
+        # appended after the scoped selection (same position in both arms); they count as accessed like any shown record
+        pool, shown = case.by_id(), {e.id for e in chosen}
+        added = [pool[i] for i in spec.inject_ids.get(task.task_id, {}).get(spec.inject, []) if i in pool and i not in shown]
+        chosen = chosen + added
+        access.record("injected", [e.id for e in added])
     access.record("prompt", [e.id for e in chosen])
     return chosen
 
@@ -224,9 +238,9 @@ def legal_all(task: Task, case: Case) -> list[EvidenceObject]:
     return sorted(items, key=lambda e: (0, e.time(basis).timestamp(), e.id) if e.time(basis) is not None else (1, 0.0, e.id))
 
 
-def build_messages(task_type: TaskType, task: Task, evidence: list[EvidenceObject], skill_summary: Payload | None) -> list[dict[str, str]]:
+def build_messages(task_type: TaskType, task: Task, evidence: list[EvidenceObject], skill_summary: Payload | None, system_suffix: str = "") -> list[dict[str, str]]:
     return [
-        {"role": "system", "content": task_type.system_prompt},
+        {"role": "system", "content": task_type.system_prompt + system_suffix},
         {"role": "user", "content": task_type.build_user_payload(task, evidence, skill_summary)},
     ]
 
@@ -281,14 +295,17 @@ def run(
                         supplied = supplied + extra   # the skill's cited records are handed to the model as supplied evidence
                         st.supplied = supplied
                         access.record("skill", [e.id for e in extra])
-        st.messages = build_messages(tt, task, supplied, st.skill_summary if cfg.skill_payload else None)
+        st.messages = build_messages(tt, task, supplied, st.skill_summary if cfg.skill_payload else None,
+                                     plans.TIER_B_ADDENDUM if cfg.plan != "none" else "")
         states.append(st)
     max_tokens = lambda st: spec.max_tokens_override or st.task_type.max_tokens  # noqa: E731
     gens = backend.generate_many([Request(st.task.task_id, st.messages, max_tokens(st)) for st in states]) if states else {}
     for st in states:
         st.initial = gens[st.task.task_id]
         st.parsed_initial = parser.extract_json(st.initial.text)
-        if cfg.uses_guard:
+        if cfg.plan != "none":
+            st.plan_initial, st.plan_result_initial, st.report_initial = plan_check(spec, st, st.parsed_initial, st.supplied)
+        elif cfg.uses_guard:
             st.report_initial = check(
                 st.parsed_initial, st.task, st.task_type, st.pool, st.supplied, st.access.ids(),
                 check_completeness=cfg.check_completeness,
@@ -298,6 +315,14 @@ def run(
     # --- wave 2: repairs ----------------------------------------------------------------------
     repair_states: list[TaskState] = []
     for st in states:
+        if cfg.review:
+            # DEV-36 self_revise: every task gets the same gold-free review turn (no guard result, no evidence)
+            st.messages = st.messages + [
+                {"role": "assistant", "content": st.initial.text},
+                {"role": "user", "content": SELF_REVISE_MESSAGE},
+            ]
+            repair_states.append(st)
+            continue
         if cfg.repair == "none" or st.report_initial is None:
             continue
         errs = _guard_errors_for(cfg, st.report_initial)
@@ -322,9 +347,13 @@ def run(
             mode = "feedback_refill"   # partial re-supply: the wording must not read as "only these records are permitted"
         view = [_view(st.task_type, st.task, e) for e in st.repair_evidence]
         repair_skill = st.skill_summary if (cfg.skill_payload and st.skill_summary is not None) else None
+        message = repair_message(mode, errs, view, repair_skill, wording=spec.repair_wording)
+        if cfg.plan == "full" and st.plan_result_initial is not None and st.plan_result_initial.ok:
+            # the result of the plan the model itself declared (never a reference result)
+            message = json.dumps({**json.loads(message), "evidence_plan_result": st.plan_result_initial.to_dict()["summary"]}, ensure_ascii=False, sort_keys=True)
         st.messages = st.messages + [
             {"role": "assistant", "content": st.initial.text},
-            {"role": "user", "content": repair_message(mode, errs, view, repair_skill, wording=spec.repair_wording)},
+            {"role": "user", "content": message},
         ]
         repair_states.append(st)
     if repair_states:
@@ -352,7 +381,9 @@ def write_outputs(spec: RunSpec, states: list[TaskState], tasks: list[Task], don
             final_supplied = st.supplied + [e for e in st.repair_evidence if e.id not in shown]   # re-shown records are not duplicated
         else:
             final_supplied = st.supplied
-        if cfg.uses_guard:
+        if cfg.plan != "none":
+            plan_finalize(spec, st, final_supplied)
+        elif cfg.uses_guard:
             st.report_final = check(
                 st.parsed_final, st.task, st.task_type, st.pool, final_supplied, st.access.ids(),
                 check_completeness=cfg.check_completeness,
@@ -405,6 +436,18 @@ def write_outputs(spec: RunSpec, states: list[TaskState], tasks: list[Task], don
             "initial_metrics": initial_metrics,
             "answer_changed_by_repair": (st.parsed_initial != st.parsed_final) and not st.replaced,
         }
+        if cfg.review:
+            row["self_revised"] = st.repair is not None
+        if spec.inject:
+            row["exposure_arm"] = spec.inject
+            row["injected_ids"] = next((e["ids"] for e in st.access.entries if e.get("stage") == "injected"), [])
+        if cfg.plan != "none":
+            row["evidence_plan_initial"] = st.plan_initial.to_dict() if st.plan_initial else None
+            row["evidence_plan_final"] = st.plan_final.to_dict() if st.plan_final else None
+            row["plan_result_initial"] = st.plan_result_initial.to_dict() if st.plan_result_initial else None
+            row["plan_result_final"] = st.plan_result_final.to_dict() if st.plan_result_final else None
+            if st.replacement_rejected is not None:
+                row["plan_replacement_rejected"] = st.replacement_rejected
         rows.append(row)
         access_rows.append({"task_id": st.task.task_id, "configuration": cfg.name, "entries": st.access.entries})
         stage_rows.append({
@@ -471,9 +514,58 @@ def _guard_errors_for(cfg: Configuration, report: GuardReport) -> list[str]:
     if cfg.guard == "scope_only":
         return report.errors(schema=True, scope=True, completeness=False, skill=False)
     if cfg.guard == "scope_completeness":
-        return report.errors(schema=True, scope=True, completeness=cfg.check_completeness, skill=cfg.skill_verify)
+        return report.errors(schema=True, scope=True, completeness=cfg.check_completeness, skill=cfg.checks_agreement)
     # guard none but skill verification requested
-    return report.errors(schema=True, scope=True, completeness=cfg.check_completeness, skill=cfg.skill_verify)
+    return report.errors(schema=True, scope=True, completeness=cfg.check_completeness, skill=cfg.checks_agreement)
+
+
+def plan_check(spec: RunSpec, st: TaskState, parsed: Payload | None, supplied: list[EvidenceObject]) -> tuple[plans.PlanReading, plans.PlanResult | None, GuardReport]:
+    """DEV-34: read the plan the submission declares, execute it on L_t, and audit the submission against R̂_t (and, for
+    plan_full, against the executed plan's result). No reference input is read: completeness uses `required=R̂_t`."""
+    cfg = spec.configuration
+    reading = plans.read(parsed)
+    result = plans.execute(reading.plan, legal_all(st.task, st.case), st.task, spec.skills) if reading.plan is not None else None
+    usable = result is not None and result.error is None
+    kwargs = dict(check_completeness=usable, required=result.required if usable else ())
+    try:
+        report = check(parsed, st.task, st.task_type, st.pool, supplied, st.access.ids(),
+                       skill_summary=result.summary if (cfg.plan == "full" and usable and result.ok) else None, **kwargs)
+    except (KeyError, TypeError, ValueError):
+        # Tier-A addendum 2 fix: the declared operation computes a different kind of result than this task type answers
+        # (e.g. a cohort decision on a lab-trend task); it cannot agree with any answer. Never reached on Tier-B or Tier-C.
+        report = check(parsed, st.task, st.task_type, st.pool, supplied, st.access.ids(), skill_summary=None, **kwargs)
+        report.skill_disagreements = ["the declared operation does not compute an answer of this task type"]
+    if report.parseable:   # the plan is part of the required output object of a plan configuration
+        report.schema_errors = report.schema_errors + reading.errors + (
+            [f"evidence_plan could not be executed: {result.error}"] if result is not None and result.error else [])
+    return reading, result, report
+
+
+def plan_finalize(spec: RunSpec, st: TaskState, final_supplied: list[EvidenceObject]) -> None:
+    """Final audit of a plan configuration; plan_full replaces a submission that still fails by the answer of the plan
+    the model declared (the reference system replaces it by the reference skill's answer)."""
+    cfg = spec.configuration
+    st.plan_final, st.plan_result_final, st.report_final = plan_check(spec, st, st.parsed_final, final_supplied)
+    res = st.plan_result_final
+    if cfg.plan == "full" and _guard_errors_for(cfg, st.report_final) and res is not None and res.ok and st.task_type.skill_answer is not None:
+        evidence = legal_all(st.task, st.case)
+        st.access.record("replacement", plans.provenance_ids(res.summary))
+        try:
+            candidate = {**st.task_type.skill_answer(res.summary, st.task, evidence), plans.PLAN_KEY: res.plan.to_dict()}
+            _, _, cand_report = plan_check(spec, st, candidate, evidence)
+            rejected = _guard_errors_for(cfg, cand_report)
+        except (KeyError, TypeError, ValueError) as exc:
+            rejected = [f"{type(exc).__name__}: {exc}"]
+        if rejected:
+            # Tier-A addendum 2 fix: an operation whose result is not an answer of this task type (e.g. a lookup declared on
+            # a count task) cannot replace the submission; the submission stands with its final audit and the replacement
+            # access is withdrawn. Never reached on Tier-B or Tier-C (those runs asserted here and completed).
+            st.access.entries.pop()
+            st.replacement_rejected = rejected
+            return
+        st.replaced = True
+        st.parsed_final = candidate
+        st.report_final = cand_report
 
 
 def _view(task_type: TaskType, task: Task, e: EvidenceObject) -> dict[str, Any]:

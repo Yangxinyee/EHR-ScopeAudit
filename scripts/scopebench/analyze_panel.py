@@ -62,11 +62,24 @@ FAMILY = {"qwen3_4b": "qwen3", "qwen3_32b": "qwen3", "qwen3_30b": "qwen3", "phi4
 PARAMS_B = {"qwen3_4b": 4.0, "phi4_14b": 14.7, "gemma3_27b": 27.4, "medgemma_27b": 27.4, "qwen3_32b": 32.8, "qwen3_30b": 30.5, "llama33_70b": 70.6}
 
 
+def n_illegal_access(r: dict) -> int:
+    """Inadmissible accessed objects of a row. DEV-33: MedAgentBench metrics carry no `n_illegal_access` key, so the
+    divergence counted 0 for every MedAgentBench row; fall back to the row's illegal id count, then to access legality."""
+    m = r["metrics"]
+    if "n_illegal_access" in m:
+        return int(m["n_illegal_access"])
+    if r.get("n_illegal_access_ids") is not None:
+        return int(r["n_illegal_access_ids"])
+    if r.get("illegal_access_ids"):
+        return len(r["illegal_access_ids"])
+    return 0 if m.get("access_legal", True) else 1
+
+
 def compact(r: dict) -> dict:
     m, im, fg = r["metrics"], r.get("initial_metrics") or {}, r.get("final_guard") or {}
     return {"task_id": r["task_id"], "patient": r["patient"], "task_type": r["task_type"], "scope": r["scope"], "leakage": bool(r.get("leakage")),
             **{ep: float(m.get(ep, 0.0)) for ep in ENDPOINTS},
-            "tokens": m["tokens_in"] + m["tokens_out"], "calls": m["calls"], "latency": m["latency_seconds"], "n_illegal_access": m.get("n_illegal_access", 0),
+            "tokens": m["tokens_in"] + m["tokens_out"], "calls": m["calls"], "latency": m["latency_seconds"], "n_illegal_access": n_illegal_access(r),
             "initial_correct": bool(im.get("answer_correct", m["answer_correct"])),
             "repaired": bool(r.get("guard_repaired")), "replaced": bool(r.get("guard_deterministic_fallback")),
             "answer_changed": bool(r.get("guard_repaired")) and not r.get("guard_deterministic_fallback")

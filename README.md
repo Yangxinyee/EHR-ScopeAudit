@@ -61,7 +61,7 @@ and prompt texts keep the development names, so the frozen prompt hashes still
 verify. The repository was renamed from EHR-AgentGuard on 2026-10-10; the old
 URL redirects here.
 
-The initial release passes **124 CPU tests**, with 33 checks skipped because
+Release 0.2.0 passes **149 CPU tests**, with 47 checks skipped because
 their external resources are unavailable. See [docs/VALIDATION.md](docs/VALIDATION.md)
 for the fresh-environment checks and recorded dependency versions.
 
@@ -78,6 +78,7 @@ python scripts/paper/make_scope_teaser.py
 python scripts/scopebench/make_gap_figure.py \
   --panel results/scopebench/tierB_panel.json --out docs/figures/gap.pdf
 python scripts/paper/make_operation_figure.py
+python scripts/paper/make_oracle_gap_figure.py
 ```
 
 Figure generation reads saved aggregate estimates and loads no model.

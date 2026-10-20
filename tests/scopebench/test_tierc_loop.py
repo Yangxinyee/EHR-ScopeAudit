@@ -12,7 +12,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.append(str(ROOT / "scripts"))
 
 from scopebench.config import PUBLIC_DATA  # noqa: E402
 from scopebench.schema import Task, read_jsonl  # noqa: E402

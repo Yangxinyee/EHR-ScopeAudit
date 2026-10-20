@@ -3,6 +3,7 @@
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{amsmath,amssymb,pifont}
+\usepackage{fix-cm}
 \usetikzlibrary{arrows.meta,calc}
 \hyphenpenalty=10000
 \exhyphenpenalty=10000
@@ -58,9 +59,9 @@
     minimum width=1.9cm,minimum height=1.05cm,inner sep=3pt,align=center},
 ]
 \path[use as bounding box] (0,-0.12) rectangle (17.6,7.48);
-\node[title] at (0,7.3) {(a) Task specification};
-\node[title] at (4.85,7.3) {(b) Scope enforcement};
-\draw[rule] (4.4,1.53) -- (4.4,7.4);
+\node[title] at (0,7.3) {(a) Evidence contract};
+\node[title] at (4.85,7.3) {(b) Enforce along the execution path};
+\draw[rule] (4.4,0.15) -- (4.4,7.4);
 
 % ------------------------------------------------------------------ (a)
 \node[label,anchor=north west,text width=4.08cm] at (0,6.92)
@@ -90,21 +91,21 @@
   (4.66,4.69) rectangle (17.6,7.05);
 \node[label,stage] at (4.89,6.87) {Prompt-only};
 \node[stage] at (6.65,6.4) {Retrieval};
-\node[stage] at (10.3,6.4) {Agent};
+\node[stage] at (11.13,6.4) {Agent};
 \node[stage] at (15.6,6.4) {Answer};
 \evidence{1}{scopec}{white}{5.45}{5.57}
 \evidence{2}{scopec}{white}{6.25}{5.57}
 \evidence{3}{invalidc}{invalidfill}{7.05}{5.57}
 \evidence{4}{invalidc}{invalidfill}{7.85}{5.57}
-\agent{10.3}{5.57}
-\draw[flow] (8.35,5.57) -- (9.66,5.57);
-\draw[flow] (10.94,5.57) -- (14.61,5.57);
+\agent{11.13}{5.57}
+\draw[flow] (8.35,5.57) -- (10.49,5.57);
+\draw[flow] (11.77,5.57) -- (14.61,5.57);
 \node[output,draw=invalidc!65,fill=invalidfill] at (15.6,5.57)
   {{\fontsize{11}{12}\selectfont $y_t$}\\Cites $\textcolor{invalidc}{e_3}$};
-\node[small,text=invalidc] at (15.6,4.87) {Out of scope};
+\node[small,text=invalidc] at (15.6,4.87) {Correct; out-of-scope citation};
 
 \draw[fill=lanefill,draw=scopec!35,rounded corners=3pt,line width=0.5pt]
-  (4.66,1.51) rectangle (17.6,4.56);
+  (4.66,0.12) rectangle (17.6,4.56);
 \node[label,stage,text=scopec] at (4.89,4.32) {EHR-ScopeAudit};
 \node[stage,text=scopec] at (5.5,3.92) {Scope filter};
 \node[stage] at (10.3,3.92) {Agent};
@@ -118,7 +119,7 @@
 \draw[white,line width=1pt] (5.33,3.17) -- (5.67,3.17);
 \evidence{1}{scopec}{white}{7.35}{3.13}
 \evidence{2}{scopec}{white}{8.15}{3.13}
-\node[small,text=scopec] at (7.75,2.49) {Admissible evidence};
+\node[small,text=scopec] (admissible) at (7.75,2.49) {Admissible evidence};
 \agent{10.3}{3.13}
 % Simple outline shield, rather than a decorative sprite or a prose card.
 \draw[auditc,line width=1.1pt,fill=white]
@@ -131,26 +132,38 @@
 \draw[flow,draw=scopec] (6.12,3.13) -- (6.92,3.13);
 \draw[flow,draw=scopec] (8.65,3.13) -- (9.66,3.13);
 \draw[flow] (10.94,3.13) -- (12.24,3.13);
+\node[small,align=center] at (10.3,2.5) {Initially cites $e_1$};
 \draw[flow,draw=auditc] (13.36,3.13) -- (14.61,3.13);
+\node[small,text=validc] at (14.02,3.42) {Pass};
 \node[output,draw=validc!75,fill=validfill] at (15.6,3.13)
   {{\fontsize{11}{12}\selectfont $y_t$}\\Cites $\textcolor{validc}{e_2}$};
-\node[small,text=validc] at (15.6,2.4) {Compliant};
+\node[small,text=validc] at (15.6,2.4) {Final submission};
 % A reject branch makes the input boundary visible without extra prose.
-\draw[flow,draw=invalidc!70,line width=0.65pt] (5.5,2.66) -- (5.5,1.96) -- (5.94,1.96);
-\node[label,text=invalidc] at (6.08,1.96) {$e_3,e_4$ excluded};
-\draw[feedback] (12.8,2.56) -- (12.8,1.96) -- (10.3,1.96) -- (10.3,2.66);
-\node[small,text=auditc,fill=lanefill,inner sep=1.5pt] at (11.55,1.96) {One repair};
+\draw[flow,draw=invalidc!70,line width=0.65pt] (5.5,2.66) -- (5.5,1.88);
+\node[small,text=invalidc,align=center] at (5.5,1.5) {$e_3,e_4$\\excluded};
+\draw[feedback] (12.5,3.48) -- (12.5,3.64) -- (10.3,3.64) -- (10.3,3.48);
+\node[small,text=auditc,fill=lanefill,inner sep=1.1pt,
+  font=\sffamily\fontsize{7}{8}\selectfont] at (11.54,3.43)
+  {Repair: $e_2$};
 
-% ------------------------------------------------------------------ (c)
-\draw[rule,line width=0.65pt] (0,1.28) -- (17.6,1.28);
-\node[title] at (0,0.98) {(c) Evaluation};
-\foreach \x/\heading in {4.55/Correctness,7.35/Completeness,10.15/Access scope,12.95/Citation scope,15.75/Auditability}
-  \node[inner sep=0,font=\sffamily\fontsize{8}{9.4}\selectfont\bfseries] at (\x,0.98) {\heading};
-\node[label] at (0,0.52) {Prompt-only};
-\node[label,text=scopec] at (0,0.07) {EHR-ScopeAudit};
-\foreach \x/\mark in {4.55/\pass,7.35/\fail,10.15/\fail,12.95/\fail,15.75/\pass}
-  \node[font=\fontsize{10}{11}\selectfont,inner sep=0] at (\x,0.52) {\mark};
-\foreach \x in {4.55,7.35,10.15,12.95,15.75}
-  \node[font=\fontsize{10}{11}\selectfont,inner sep=0] at (\x,0.07) {\pass};
+% Typed computation uses admissible evidence and feeds the submission audit.
+\node[output,minimum width=2.35cm,minimum height=0.75cm,draw=scopec!70]
+  (skills) at (8.0,0.85) {\textbf{ChartSkills}\\Typed result};
+\draw[flow,draw=scopec] ([yshift=-1pt]admissible.south) -- (7.75,1.24);
+\node[small,text=scopec,anchor=west] at (8.1,1.54) {Covered operations};
+\draw[flow,draw=scopec] (skills.east) -- (12.15,0.85) -- (12.15,2.75) -- (12.44,2.75);
+\node[small,text=scopec,fill=lanefill,inner sep=1.2pt] at (10.6,0.85) {Verify};
+
+% Replacement is an explicit, conditional stage after the repair turn.
+\node[output,minimum width=2.65cm,minimum height=0.75cm,draw=scopec!70]
+  (replacement) at (15.6,0.85) {\textbf{Verified replacement}\\Covered operations};
+\draw[flow,draw=auditc] (13.08,2.69) -- (14.1,2.12) -- (15.6,2.12) -- (replacement.north);
+\node[small,align=center,inner sep=1.5pt] at (13.65,1.65)
+  {Mismatch persists\\after repair};
+\draw[flow,draw=scopec] (replacement.east) -- (17.21,0.85) -- (17.21,3.13) -- (16.58,3.13);
+
+% Auditing observes access below the model boundary, including tool returns.
+\node[label,small,align=left,text width=3.95cm] at (0,0.9)
+  {\textbf{Access log $A_t$}\\Retrieval and tool returns};
 \end{tikzpicture}
 \end{document}

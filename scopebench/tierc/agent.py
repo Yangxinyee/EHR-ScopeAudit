@@ -15,6 +15,7 @@ Both produce <tool_call>{...}</tool_call> blocks, parsed by the benchmark's own 
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 import time
@@ -32,6 +33,7 @@ from ..schema import EvidenceObject, Task, read_jsonl
 from ..scoring import score
 from ..tasktypes import get as get_task_type
 from .. import tasktypes_tierc  # noqa: F401  (registers fhir_agentbench_v1)
+from . import plans as tierc_plans
 from .store import TaskStore
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -59,6 +61,10 @@ CONFIGS: dict[str, dict[str, Any]] = {
     # FHIR-AgentBench's own second mode (plan §4.2, S4): the released focused retrieval (question-aware filtering, retrieval
     # limit 128, MedicationRequest reference resolution) with no predicate, guard or skill. `mode` here overrides --mode.
     "specialized_tools": {"enforcement": "none", "guard": False, "repair": False, "skill": False, "mode": "focused"},
+    # DEV-34 (experiments/SCOPEBENCH_PLAN_PROTOCOL.md): the audit without reference inputs — R̂_t and the skill come from
+    # the evidence plan the model declares on a `Plan:` line (scopebench/tierc/plans.py)
+    "plan_audit": {"enforcement": "contract", "guard": True, "repair": True, "skill": False, "plan": "audit"},
+    "plan_full": {"enforcement": "contract", "guard": True, "repair": True, "skill": False, "plan": "full"},
 }
 
 
@@ -79,6 +85,7 @@ class TierCSpec:
     label: str = ""
     repair_wording: str = "a"
     skills: dict[str, Any] = field(default_factory=dict)   # template -> skill fn (Tier-C protocol; empty = coverage 0)
+    plan_executor: Any = None                              # tierc_plans.Executor for the DEV-34 plan configurations
 
 
 @dataclass
@@ -113,6 +120,11 @@ class Episode:
     replaced: bool = False
     skill_summary: dict | None = None
     replacement_reason: list[str] = field(default_factory=list)
+    # DEV-34 plan configurations
+    plan_initial: Any = None
+    plan_final: Any = None
+    plan_result_initial: Any = None
+    plan_result_final: Any = None
 
 
 def _strip(text: str) -> str:
@@ -261,10 +273,77 @@ def pool_for(ep: Episode, extra_ids: list[str]) -> dict[str, EvidenceObject]:
     return pool
 
 
+def plan_audit(ep: Episode, spec: TierCSpec, cfg: dict[str, Any], parsed: dict | None, reading) -> tuple[Any, GuardReport]:
+    """DEV-34: execute the declared plan on the task's permitted resources and audit the submission against R̂_t (and,
+    for plan_full, against the plan's result). The audit's pool holds accessed, cited and plan-named resources only —
+    no reference id."""
+    tt = get_task_type("fhir_agentbench_v1")
+    context = ep.task.metadata.get("assumption")   # the Context line the user message shows (tasktypes_tierc.user_message)
+    result = spec.plan_executor(reading.plan, ep.store, ep.task, context) if reading.plan is not None else None
+    usable = result is not None and result.error is None
+    required = list(result.required) if usable else []
+    pool = pool_for(ep, list(tt.citations(parsed)) + required)
+    supplied = [pool[i] for i in ep.store.access_ids() if i in pool]
+    report = check(parsed, ep.task, tt, pool, supplied, set(ep.store.access_ids()), check_completeness=usable, required=required)
+    if report.parseable:   # the Plan line is part of a plan configuration's required output
+        report.schema_errors = report.schema_errors + reading.errors + (
+            [f"the plan could not be executed: {result.error}"] if result is not None and result.error else [])
+        if cfg["plan"] == "full" and usable and result.ok:
+            agrees = bool(parsed.get("answer_text") and canonical_answer_correct(parsed["answer_text"], json.dumps(result.summary["answer"])))
+            if not agrees:
+                report.skill_disagreements = ["answer differs from the result of the declared plan"]
+    return result, report
+
+
+def plan_initial_audit(ep: Episode, spec: TierCSpec, cfg: dict[str, Any]) -> bool:
+    """Audit the loop's final answer; prepare the repair turn when it fails. Returns whether to repair."""
+    text, reading = tierc_plans.read(ep.final_text, spec.plan_executor.catalog)
+    ep.parsed_initial = tasktypes_tierc.parse_final(text) if not ep.error else None
+    ep.plan_initial = reading
+    ep.plan_result_initial, ep.report_initial = plan_audit(ep, spec, cfg, ep.parsed_initial, reading)
+    errs = ep.report_initial.errors()
+    if not (errs and cfg["repair"] and not ep.gen_errors):
+        return False
+    res = ep.plan_result_initial
+    refill = ep.store.legal_required_resources(res.required)[:20] if res is not None and res.error is None else []
+    if refill:
+        ep.store._record(ep.rounds + 1, "scopeguard_refill", {"n": len(refill)}, refill, [])
+    ep.repair_ids = [str(r["id"]) for r in refill]
+    payload = json.loads(repair_message("feedback_refill", errs, [compact_resource(r) for r in refill], None, wording=spec.repair_wording))
+    if cfg["plan"] == "full" and res is not None and res.ok:
+        payload["evidence_plan_result"] = res.to_dict()["summary"]   # the result of the model's own plan
+    payload["note"] = "Do not call tools. Resubmit the line The final answer is: <JSON> followed by the Citations line and the Plan line."
+    if ep.final_text:
+        ep.messages.append({"role": "assistant", "content": ep.final_text})
+    ep.messages.append({"role": "user", "content": json.dumps(payload, ensure_ascii=False, sort_keys=True)})
+    ep.repaired = True
+    return True
+
+
+def plan_final_audit(ep: Episode, spec: TierCSpec, cfg: dict[str, Any], final_text: str | None) -> None:
+    """Final audit; plan_full replaces a submission that still fails by the answer of the plan the model declared."""
+    text, reading = tierc_plans.read(final_text, spec.plan_executor.catalog)
+    ep.parsed_final = tasktypes_tierc.parse_final(text) if text else None
+    ep.plan_final = reading
+    ep.plan_result_final, ep.report_final = plan_audit(ep, spec, cfg, ep.parsed_final, reading)
+    res = ep.plan_result_final
+    if cfg["plan"] == "full" and ep.report_final.errors() and res is not None and res.ok:
+        ep.replacement_reason = ep.report_final.errors()
+        ep.store.record_skill_provenance(res.summary.get("_provenance_pairs", []))   # cited resources enter A_t as a legal skill access
+        ep.parsed_final = {"answer_text": json.dumps(res.summary["answer"]), "answer": res.summary["answer"], "citations": list(res.required),
+                           "citations_line_present": True, "replaced": True}
+        ep.replaced = True
+        ep.plan_result_final, ep.report_final = plan_audit(ep, spec, cfg, ep.parsed_final, reading)
+
+
 def run_repairs(eps: list[Episode], spec: TierCSpec, cfg: dict[str, Any], backend: Backend, tokenizer) -> None:
     tt = get_task_type("fhir_agentbench_v1")
     to_repair: list[Episode] = []
     for ep in eps:
+        if cfg.get("plan"):
+            if plan_initial_audit(ep, spec, cfg):
+                to_repair.append(ep)
+            continue
         ep.parsed_initial = tasktypes_tierc.parse_final(ep.final_text) if not ep.error else None
         if not cfg["guard"]:
             continue
@@ -301,11 +380,14 @@ def finalize(ep: Episode, cfg: dict[str, Any], spec: TierCSpec) -> dict[str, Any
     tt = get_task_type("fhir_agentbench_v1")
     task = ep.task
     final_text = ep.repair_text if ep.repaired and ep.repair_text is not None else ep.final_text
-    ep.parsed_final = tasktypes_tierc.parse_final(final_text) if final_text else None
+    if cfg.get("plan"):
+        plan_final_audit(ep, spec, cfg, final_text)
+    else:
+        ep.parsed_final = tasktypes_tierc.parse_final(final_text) if final_text else None
     access_ids = set(ep.store.access_ids())
     pool = pool_for(ep, list(tt.citations(ep.parsed_final)) + list(tt.citations(ep.parsed_initial)) + list(task.required_ids))
     supplied = [pool[i] for i in ep.store.access_ids() if i in pool]
-    if cfg["guard"]:
+    if cfg["guard"] and not cfg.get("plan"):
         ep.report_final = check(ep.parsed_final, task, tt, pool, supplied, access_ids, check_completeness=True)
         # DEV-26 (full): the template skill verifies the submission and replaces it deterministically. Coverage is per
         # template (Tier-C protocol §Skills); with no skill mapped for the template the answer stands.
@@ -353,6 +435,10 @@ def finalize(ep: Episode, cfg: dict[str, Any], spec: TierCSpec) -> dict[str, Any
         "generation_errors": ep.gen_errors, "metrics": m, "initial_metrics": m0, "skill_summary": ep.skill_summary, "replacement_reason": ep.replacement_reason,
         "benchmark_native": native, "n_illegal_access_ids": len(ep.store.illegal_access_ids()), "trace": ep.trace,
         "rt_in_lt": task.metadata.get("rt_in_lt"),
+        **({"evidence_plan_initial": ep.plan_initial.to_dict() if ep.plan_initial else None,
+            "evidence_plan_final": ep.plan_final.to_dict() if ep.plan_final else None,
+            "plan_result_initial": ep.plan_result_initial.to_dict() if ep.plan_result_initial else None,
+            "plan_result_final": ep.plan_result_final.to_dict() if ep.plan_result_final else None} if cfg.get("plan") else {}),
     }
 
 
@@ -381,7 +467,8 @@ def run_tierc(spec: TierCSpec, tasks: list[Task], store, patient_map: dict[str, 
         pid = patient_map[task.patient]
         ts = TaskStore(store=store, patient_fhir_id=pid, patient_hash=task.patient, contract=task.contract, enforcement=cfg["enforcement"], mode=spec.mode,
                        question=f"{task.question} {task.metadata.get('assumption') or ''}")
-        system = tt.system_prompt + ("" if spec.adapter == "native" else TOOL_TEXT)
+        # DEV-34 v0.2: the plan addendum follows the tool instructions (placed before them it pulled Gemma-3 off the tool-call format)
+        system = tt.system_prompt + ("" if spec.adapter == "native" else TOOL_TEXT) + (tierc_plans.addendum(spec.plan_executor.catalog) if cfg.get("plan") else "")
         msgs = [{"role": "system", "content": system}, {"role": "user", "content": tasktypes_tierc.user_message(task, pid)}]
         eps.append(Episode(task=task, store=ts, messages=msgs))
     run_loop(eps, spec, cfg, backend, tokenizer)
@@ -407,6 +494,9 @@ def run_tierc(spec: TierCSpec, tasks: list[Task], store, patient_map: dict[str, 
                 "task_manifest_sha256": sha256_file(manifest_path / "tasks.jsonl") if manifest_path else None, "n_tasks_total": len(tasks), "n_tasks_this_run": len(rows),
                 "n_tasks_previously_done": len(done), "n_tasks_retried_after_errors": len(redo), "backend": backend.metadata(), "started_at": started,
                 "finished_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "label": spec.label, "mean_rounds": (sum(ep.rounds for ep in eps) / len(eps)) if eps else None,
-                "skills_mapped_templates": sorted(spec.skills), **(extra_metadata or {})}
+                "skills_mapped_templates": sorted(spec.skills),
+                **({"plan_addendum_sha256": hashlib.sha256(tierc_plans.addendum(spec.plan_executor.catalog).encode()).hexdigest(),
+                    "plan_catalog": str(tierc_plans.CATALOG_PATH.relative_to(ROOT))} if cfg.get("plan") else {}),
+                **(extra_metadata or {})}
     (out_dir / "metadata.json").write_text(json.dumps(metadata, indent=1, sort_keys=True, default=str) + "\n")
     return metadata

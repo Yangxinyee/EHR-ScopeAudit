@@ -94,10 +94,17 @@ def read_jsonl(p: Path):
                 yield json.loads(line)
 
 
+def _set_aside(root: Path, p: Path) -> bool:
+    """Directories whose name starts with '_' hold superseded samples (for example `_sample600_20261011/`); skipped."""
+    return any(part.startswith("_") for part in p.relative_to(root).parts)
+
+
 def load_roots(roots: list[Path]):
     key, key_direct, strata, ratings = {}, {}, {}, defaultdict(dict)
     for root in roots:
         for kf in root.rglob("ANSWER_KEY.jsonl"):
+            if _set_aside(root, kf):
+                continue
             for r in read_jsonl(kf):
                 key[r["pair_id"]] = r
             for pf in kf.parent.glob("*.json"):
@@ -110,9 +117,13 @@ def load_roots(roots: list[Path]):
                 if isinstance(p, dict) and "pair_id" in p:
                     strata[p["pair_id"]] = (p.get("tier"), p.get("scope"), p.get("task_group"))
         for kf in root.rglob("ANSWER_KEY_direct.jsonl"):
+            if _set_aside(root, kf):
+                continue
             for r in read_jsonl(kf):
                 key_direct[r["pair_id"]] = r
         for rf in root.rglob("ratings_*.jsonl"):
+            if _set_aside(root, rf):
+                continue
             for r in read_jsonl(rf):
                 if not r.get("complete"):
                     continue
@@ -122,7 +133,9 @@ def load_roots(roots: list[Path]):
 
 
 # ------------------------------------------------------------------------------------------ main cards
-def analyse_fields(key, strata, ratings, margin, alpha):
+def analyse_fields(key, strata, ratings, margin, alpha, conf_tiers=("B", "C")):
+    """Per field: reliability, agreement with the programmatic label (all tiers, and per tier), and the prespecified
+    non-inferiority test on the confirmatory tiers only; the other tiers are descriptive."""
     out = {}
     for f in FIELDS:
         units = defaultdict(list)
@@ -145,7 +158,20 @@ def analyse_fields(key, strata, ratings, margin, alpha):
                 tot += 1
                 agree += (x == y)
         p_human = agree / tot if tot else None
-        ni = noninferiority(cm_all["agreement"], p_human, max(1, cm_all["n"]), margin, alpha) if tot and cm_all["n"] else None
+        labelled = {**single, **majority}
+        conf = {pid: h for pid, h in labelled.items() if strata.get(pid, (None,))[0] in conf_tiers}
+        cm_conf = confusion(conf, prog)
+        pairs_conf = [v for pid, v in units.items() if strata.get(pid, (None,))[0] in conf_tiers]
+        agree_c = sum((x == y) for v in pairs_conf for x, y in itertools.combinations(v, 2)); tot_c = sum(len(v) * (len(v) - 1) // 2 for v in pairs_conf)
+        p_human_conf = agree_c / tot_c if tot_c else None
+        ni = noninferiority(cm_conf["agreement"], p_human_conf, max(1, cm_conf["n"]), margin, alpha) if tot_c and cm_conf["n"] else None
+        by_tier = {}
+        for pid, h in labelled.items():
+            if h == "unsure" or pid not in prog:
+                continue
+            d = by_tier.setdefault(str(strata.get(pid, ("?",))[0]), {"n": 0, "agree": 0}); d["n"] += 1; d["agree"] += int((h == "yes") == prog[pid])
+        for d in by_tier.values():
+            d["agreement"] = d["agree"] / d["n"] if d["n"] else None
         by_stratum = {}
         for pid, h in {**single, **majority}.items():
             if h == "unsure" or pid not in prog:
@@ -159,13 +185,39 @@ def analyse_fields(key, strata, ratings, margin, alpha):
         out[f] = {"krippendorff_alpha": kalpha, "n_units_rated": len(units), "n_rated_by_2plus": sum(1 for v in units.values() if len(v) >= 2),
                   "n_majority": len(majority), "unsure_share": (sum(v.count("unsure") for v in units.values()) / max(1, sum(len(v) for v in units.values()))),
                   "confusion_vs_programmatic_majority": cm_majority, "confusion_vs_programmatic_all_labelled": cm_all,
-                  "human_pairwise_agreement": p_human, "noninferiority": ni, "by_stratum": dict(sorted(by_stratum.items()))}
+                  "confusion_vs_programmatic_confirmatory_tiers": cm_conf, "confirmatory_tiers": list(conf_tiers),
+                  "human_pairwise_agreement": p_human, "human_pairwise_agreement_confirmatory_tiers": p_human_conf,
+                  "noninferiority": ni, "by_tier": dict(sorted(by_tier.items())), "by_stratum": dict(sorted(by_stratum.items()))}
     return out
 
 
 # ------------------------------------------------------------------------------------------ direct-set cards
 def _sets(r):
     return set(r.get("allowed_ids") or []), set(r.get("needed_ids") or [])
+
+
+def gold_spot_check(key, strata, ratings):
+    """The reference answers checked through the raters: on cards whose submission the scorer marks correct (it
+    reproduces the reference), a clinician's 'No' on answer correctness is a disagreement with the reference itself.
+    Reported per tier with the majority label where two or more raters rated the card."""
+    units = defaultdict(list)
+    for rt, rows in ratings.items():
+        for pid, r in rows.items():
+            k = key.get(pid)
+            if k and bool((k.get("metrics") or {}).get("answer_correct")) and r.get("answer_clinically_correct") in ("yes", "no", "unsure"):
+                units[pid].append(r["answer_clinically_correct"])
+    out = {"n_cards_auto_correct": sum(1 for k in key.values() if bool((k.get("metrics") or {}).get("answer_correct"))), "n_rated": len(units)}
+    by_tier = defaultdict(lambda: {"n": 0, "yes": 0, "no": 0, "unsure": 0})
+    for pid, v in units.items():
+        lab = Counter(v).most_common(1)[0][0] if (len(v) == 1 or Counter(v).most_common(1)[0][1] > len(v) / 2) else "unsure"
+        d = by_tier[str(strata.get(pid, ("?",))[0])]; d["n"] += 1; d[lab] += 1
+    tot = {"n": 0, "yes": 0, "no": 0, "unsure": 0}
+    for d in by_tier.values():
+        for k2 in tot:
+            tot[k2] += d[k2]
+    out["by_tier"] = dict(sorted(by_tier.items())); out["all"] = tot
+    out["reference_disagreement_rate"] = tot["no"] / tot["n"] if tot["n"] else None
+    return out
 
 
 def analyse_direct(key_direct, ratings, margin, alpha):
@@ -225,6 +277,7 @@ def main() -> int:
     ap.add_argument("--power", action="store_true")
     ap.add_argument("--p0", type=float, default=0.90)
     ap.add_argument("--power-target", type=float, default=0.80)
+    ap.add_argument("--confirmatory-tiers", default="B,C", help="tiers on which the non-inferiority test is confirmatory (default B,C); the rest are descriptive")
     a = ap.parse_args()
     if a.power:
         print(json.dumps(power(a.p0, a.margin, a.alpha, a.power_target), indent=1))
@@ -237,7 +290,10 @@ def main() -> int:
         return 0
     report = {"roots": [str(p) for p in a.packets], "n_main_cards": len(key), "n_direct_cards": len(key_direct), "raters": sorted(ratings),
               "n_complete_ratings": {rt: len(rows) for rt, rows in ratings.items()},
-              "fields": analyse_fields(key, strata, ratings, a.margin, a.alpha), "direct_set": analyse_direct(key_direct, ratings, a.margin, a.alpha)}
+              "confirmatory_tiers": [x.strip() for x in a.confirmatory_tiers.split(",") if x.strip()],
+              "fields": analyse_fields(key, strata, ratings, a.margin, a.alpha, tuple(x.strip() for x in a.confirmatory_tiers.split(",") if x.strip())),
+              "gold_spot_check": gold_spot_check(key, strata, ratings),
+              "direct_set": analyse_direct(key_direct, ratings, a.margin, a.alpha)}
     print(json.dumps(report, indent=1))
     if a.json:
         a.json.write_text(json.dumps(report, indent=1))

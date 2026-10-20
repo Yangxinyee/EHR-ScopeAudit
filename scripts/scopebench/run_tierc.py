@@ -26,7 +26,7 @@ from scopebench.tierc.store import load_store  # noqa: E402
 
 FHIR_DIR = PUBLIC_DATA / "mimic-iv-clinical-database-demo-on-fhir-2.1.0" / "fhir"
 PATIENT_MAP = PUBLIC_DATA / ".clinehr_cache" / "scopebench_tierc_patients" / "fhir_agentbench_patient_map.json"
-SKILL_VALIDATION = ROOT / "experiments/scopebench_tierC/skill_validation.json"   # DEV-26: the covered-template record `full` maps
+SKILL_VALIDATION = ROOT / "experiments/scopebench_tierC/skill_validation_protocol_dev31.json"   # DEV-31: the covered-template record `full` maps (valid-split rule; DEV-26 used skill_validation.json)
 NATIVE_TOOL_TEMPLATES = {"qwen3_4b", "qwen3_32b", "qwen3_30b"}   # templates that render tools= and the tool role (checked 2026-09-27)
 
 
@@ -40,6 +40,8 @@ def main() -> None:
     p.add_argument("--concurrency", type=int, default=32)
     p.add_argument("--split", default=None)
     p.add_argument("--max-tasks", type=int, default=None)
+    p.add_argument("--task-ids", type=Path, default=None, help="JSON list of task ids to run (DEV-32 rerun of the affected tasks); recorded by hash in the run metadata")
+    p.add_argument("--skill-validation", type=Path, default=SKILL_VALIDATION, help="covered-template record mapped onto `full`")
     p.add_argument("--adapter", default=None, choices=[None, "native", "text"])
     p.add_argument("--mode", default="broad", choices=["broad", "focused"])
     p.add_argument("--max-rounds", type=int, default=8)
@@ -61,6 +63,15 @@ def main() -> None:
     tasks = [Task.from_dict(r) for r in read_jsonl(args.manifest / "tasks.jsonl")]
     if args.split:
         tasks = [t for t in tasks if t.split == args.split]
+    task_ids_sha256 = None
+    if args.task_ids:
+        import hashlib
+        keep = set(json.loads(args.task_ids.read_text()))
+        task_ids_sha256 = hashlib.sha256(args.task_ids.read_bytes()).hexdigest()
+        missing = keep - {t.task_id for t in tasks}
+        if missing:
+            raise SystemExit(f"--task-ids: {len(missing)} ids not in the manifest")
+        tasks = [t for t in tasks if t.task_id in keep]
     tasks = sorted(tasks, key=lambda t: (t.patient, t.task_id))
     if args.max_tasks:
         tasks = tasks[: args.max_tasks]
@@ -92,12 +103,18 @@ def main() -> None:
         import hashlib
 
         from scopebench.tierc.skills import mapped_skills
-        spec.skills = mapped_skills(SKILL_VALIDATION, patient_map)
-        skill_validation_sha256 = hashlib.sha256(SKILL_VALIDATION.read_bytes()).hexdigest()
-        print(f"skills mapped for {len(spec.skills)} covered templates ({SKILL_VALIDATION.name} {skill_validation_sha256[:12]})", flush=True)
+        spec.skills = mapped_skills(args.skill_validation, patient_map)
+        skill_validation_sha256 = hashlib.sha256(args.skill_validation.read_bytes()).hexdigest()
+        print(f"skills mapped for {len(spec.skills)} covered templates ({args.skill_validation.name} {skill_validation_sha256[:12]})", flush=True)
+    if CONFIGS[args.config].get("plan"):
+        # DEV-34: the model's declared evidence plan drives the audit; the catalog is the only skill input
+        from scopebench.tierc.plans import CATALOG_PATH, Executor
+        spec.plan_executor = Executor(patient_map)
+        print(f"evidence-plan catalog: {len(spec.plan_executor.catalog)} templates ({CATALOG_PATH.name})", flush=True)
     extra = {"tag": args.tag, "split": args.split, "cell_kind": args.cell_kind, "temperature": args.temperature, "sampling_seed": args.seed,
              "fhir_dir": FHIR_DIR.name, "tokenizer_path": str(panel[args.tag].get("serving_path") or panel[args.tag]["path"]) if args.tag in panel else None,
-             "skill_validation_sha256": skill_validation_sha256}
+             "skill_validation_sha256": skill_validation_sha256, "skill_validation": args.skill_validation.name if skill_validation_sha256 else None,
+             "task_ids_file": str(args.task_ids) if args.task_ids else None, "task_ids_sha256": task_ids_sha256}
     meta = run_tierc(spec, tasks, store, patient_map, backend, tokenizer, args.out_dir, manifest_path=args.manifest, extra_metadata=extra, retry_errors=args.retry_errors)
     print(f"{args.config}: {meta['n_tasks_this_run']} tasks written to {args.out_dir} ({meta['n_tasks_previously_done']} already done; mean rounds {meta['mean_rounds']})")
 

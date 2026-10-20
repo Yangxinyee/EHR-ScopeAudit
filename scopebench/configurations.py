@@ -35,6 +35,8 @@ class Configuration:
     predicate_engine: str | None = None       # None = scopebench.predicate; 'temporal_sql_view' | 'abac_pdp' (S4 baselines)
     query_scope_hint: bool = False            # reranker baseline: the scope is stated in the retrieval query, never enforced
     repair_resupply_topk: bool = False        # ScopePair-compat: the repair turn re-sends the legal top-k (frozen 2026-07 behaviour)
+    plan: str = "none"                        # none | audit | full — DEV-34: R̂_t and the skill come from the model's declared evidence plan
+    review: bool = False                      # DEV-36: one unconditional, gold-free review turn (guard.SELF_REVISE_MESSAGE)
     paper_row: str = ""
 
     @property
@@ -52,6 +54,11 @@ class Configuration:
     @property
     def skill_replace(self) -> bool:
         return self.skill in {"replace_no_payload", "full"}
+
+    @property
+    def checks_agreement(self) -> bool:
+        """The audit includes agreement with a deterministic result (the reference skill, or the executed plan)."""
+        return self.skill_verify or self.plan == "full"
 
 
 CONFIGS: dict[str, Configuration] = {}
@@ -85,6 +92,13 @@ _add(Configuration("citation_validator", evidence="unscoped", guard="scope_only"
 _add(Configuration("reranker", evidence="unscoped", query_scope_hint=True, paper_row="Evidence reranker"))
 _add(Configuration("temporal_sql_view", evidence="scoped", predicate_engine="temporal_sql_view", paper_row="Temporal SQL view"))
 _add(Configuration("abac_pdp", evidence="scoped", predicate_engine="abac_pdp", paper_row="Generic ABAC policy engine"))
+
+# --- DEV-34: the auditor without reference inputs (experiments/SCOPEBENCH_PLAN_PROTOCOL.md) ---------
+_add(Configuration("plan_audit", evidence="scoped", guard="scope_completeness", repair="feedback", plan="audit", paper_row="Plan-audited"))
+_add(Configuration("plan_full", evidence="scoped", guard="scope_completeness", repair="feedback", plan="full", paper_row="Plan-audited + plan skill"))
+
+# --- DEV-36: same-architecture compute control (experiments/SCOPEBENCH_CONTROLS_PROTOCOL.md) ------
+_add(Configuration("self_revise", evidence="scoped", review=True, paper_row="Scope-aware + self-revision"))
 
 # --- ScopePair regression (frozen semantics: 3 nearest, ScopePair guard without R_t completeness) ---
 _add(Configuration("sp_unscoped", evidence="unscoped", check_completeness=False, paper_row="ScopePair unscoped"))

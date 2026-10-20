@@ -6,7 +6,7 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2026-10-10T00:52:31.720739</dc:date>
+    <dc:date>2026-10-20T17:37:30.597901</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -35,7 +35,7 @@ L 163.7118 60.5268
 L 163.7118 27.09 
 L 7.668 27.09 
 z
-" clip-path="url(#p67cf5087e6)" style="fill: #d6e3f1"/>
+" clip-path="url(#p30f58c9ed0)" style="fill: #d6e3f1"/>
    </g>
    <g id="patch_3">
     <path d="M 163.7118 60.5268 
@@ -43,29 +43,53 @@ L 291.384 60.5268
 L 291.384 27.09 
 L 163.7118 27.09 
 z
-" clip-path="url(#p67cf5087e6)" style="fill: #994455; opacity: 0.09"/>
+" clip-path="url(#p30f58c9ed0)" style="fill: #994455; opacity: 0.09"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 7.668 108.5922 
+L 291.384 108.5922 
+L 291.384 84.9078 
+L 7.668 84.9078 
+z
+" clip-path="url(#p30f58c9ed0)" style="fill: #994455; opacity: 0.075"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 7.668 136.4562 
+L 291.384 136.4562 
+L 291.384 112.7718 
+L 7.668 112.7718 
+z
+" clip-path="url(#p30f58c9ed0)" style="fill: #d6e3f1"/>
    </g>
    <g id="line2d_1">
     <path d="M 19.01664 46.5948 
 L 280.03536 46.5948 
-" clip-path="url(#p67cf5087e6)" style="fill: none; stroke: #626c76; stroke-width: 0.8; stroke-linecap: square"/>
+" clip-path="url(#p30f58c9ed0)" style="fill: none; stroke: #626c76; stroke-width: 0.8; stroke-linecap: square"/>
    </g>
    <g id="line2d_2">
     <path d="M 163.7118 61.92 
 L 163.7118 21.5172 
-" clip-path="url(#p67cf5087e6)" style="fill: none; stroke-dasharray: 1.7,1.7; stroke-dashoffset: 0; stroke: #23272b; stroke-width: 0.85"/>
+" clip-path="url(#p30f58c9ed0)" style="fill: none; stroke-dasharray: 1.7,1.7; stroke-dashoffset: 0; stroke: #23272b; stroke-width: 0.85"/>
    </g>
    <g id="line2d_3">
     <path d="M 7.668 79.335 
 L 291.384 79.335 
-" clip-path="url(#p67cf5087e6)" style="fill: none; stroke: #dee2e6; stroke-width: 0.7; stroke-linecap: square"/>
+" clip-path="url(#p30f58c9ed0)" style="fill: none; stroke: #dee2e6; stroke-width: 0.7; stroke-linecap: square"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 148.10742 104.69124 
+L 165.697812 104.69124 
+L 165.697812 88.80876 
+L 148.10742 88.80876 
+z
+" clip-path="url(#p30f58c9ed0)" style="fill: #ffffff; stroke: #994455; stroke-width: 0.75; stroke-linejoin: miter"/>
    </g>
    <g id="text_1">
     <text style="font-weight: 700; font-size: 9px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="7.668" y="13.030594" transform="rotate(-0 7.668 13.030594)">(a) Same answer, different evidence paths</text>
    </g>
    <g id="PathCollection_1">
     <defs>
-     <path id="C0_0_d46ff38848" d="M 0 2.5 
+     <path id="C0_0_669564d77c" d="M 0 2.5 
 C 0.663008 2.5 1.29895 2.236584 1.767767 1.767767 
 C 2.236584 1.29895 2.5 0.663008 2.5 -0 
 C 2.5 -0.663008 2.236584 -1.29895 1.767767 -1.767767 
@@ -77,11 +101,11 @@ C -1.29895 2.236584 -0.663008 2.5 0 2.5
 z
 "/>
     </defs>
-    <g clip-path="url(#p67cf5087e6)">
-     <use xlink:href="#C0_0_d46ff38848" x="58.73688" y="46.5948" style="fill: #004488; stroke: #004488"/>
+    <g clip-path="url(#p30f58c9ed0)">
+     <use xlink:href="#C0_0_669564d77c" x="58.73688" y="46.5948" style="fill: #004488; stroke: #004488"/>
     </g>
-    <g clip-path="url(#p67cf5087e6)">
-     <use xlink:href="#C0_0_d46ff38848" x="240.31512" y="46.5948" style="fill: #994455; stroke: #994455"/>
+    <g clip-path="url(#p30f58c9ed0)">
+     <use xlink:href="#C0_0_669564d77c" x="240.31512" y="46.5948" style="fill: #994455; stroke: #994455"/>
     </g>
    </g>
    <g id="text_2">
@@ -185,105 +209,141 @@ z
    </g>
   </g>
   <g id="axes_2">
-   <g id="patch_4">
-    <path d="M 318.80988 60.5268 
-L 479.27556 60.5268 
-L 479.27556 46.5948 
-L 318.80988 46.5948 
-z
-" clip-path="url(#p8a535f26e7)" style="fill: #e7eaee"/>
-   </g>
-   <g id="patch_5">
-    <path d="M 318.80988 60.5268 
-L 448.145218 60.5268 
-L 448.145218 46.5948 
-L 318.80988 46.5948 
-z
-" clip-path="url(#p8a535f26e7)" style="fill: #994455"/>
-   </g>
-   <g id="patch_6">
-    <path d="M 318.80988 103.716 
-L 479.27556 103.716 
-L 479.27556 89.784 
-L 318.80988 89.784 
-z
-" clip-path="url(#p8a535f26e7)" style="fill: #e7eaee"/>
-   </g>
    <g id="patch_7">
-    <path d="M 318.80988 103.716 
-L 407.386935 103.716 
-L 407.386935 89.784 
-L 318.80988 89.784 
+    <path d="M 318.80988 56.3472 
+L 438.2262 56.3472 
+L 438.2262 45.8982 
+L 318.80988 45.8982 
 z
-" clip-path="url(#p8a535f26e7)" style="fill: url(#ha21b470098)"/>
+" clip-path="url(#pb697355d52)" style="fill: #e7eaee"/>
    </g>
-   <g id="line2d_4">
-    <path d="M 318.80988 116.9514 
-L 479.27556 116.9514 
-" clip-path="url(#p8a535f26e7)" style="fill: none; stroke: #626c76; stroke-width: 0.65; stroke-linecap: square"/>
+   <g id="patch_8">
+    <path d="M 318.80988 56.3472 
+L 389.265509 56.3472 
+L 389.265509 45.8982 
+L 318.80988 45.8982 
+z
+" clip-path="url(#pb697355d52)" style="fill: #994455; opacity: 0.35"/>
    </g>
-   <g id="line2d_5">
-    <path d="M 318.80988 116.9514 
-L 318.80988 120.4344 
-" clip-path="url(#p8a535f26e7)" style="fill: none; stroke: #626c76; stroke-width: 0.6; stroke-linecap: square"/>
+   <g id="patch_9">
+    <path d="M 318.80988 56.3472 
+L 363.352167 56.3472 
+L 363.352167 45.8982 
+L 318.80988 45.8982 
+z
+" clip-path="url(#pb697355d52)" style="fill: url(#hdbcf48988e)"/>
    </g>
-   <g id="line2d_6">
-    <path d="M 399.04272 116.9514 
-L 399.04272 120.4344 
-" clip-path="url(#p8a535f26e7)" style="fill: none; stroke: #626c76; stroke-width: 0.6; stroke-linecap: square"/>
+   <g id="patch_10">
+    <path d="M 318.80988 84.9078 
+L 438.2262 84.9078 
+L 438.2262 74.4588 
+L 318.80988 74.4588 
+z
+" clip-path="url(#pb697355d52)" style="fill: #e7eaee"/>
    </g>
-   <g id="line2d_7">
-    <path d="M 479.27556 116.9514 
-L 479.27556 120.4344 
-" clip-path="url(#p8a535f26e7)" style="fill: none; stroke: #626c76; stroke-width: 0.6; stroke-linecap: square"/>
+   <g id="patch_11">
+    <path d="M 318.80988 84.9078 
+L 389.743174 84.9078 
+L 389.743174 74.4588 
+L 318.80988 74.4588 
+z
+" clip-path="url(#pb697355d52)" style="fill: #994455; opacity: 0.35"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 318.80988 84.9078 
+L 337.677659 84.9078 
+L 337.677659 74.4588 
+L 318.80988 74.4588 
+z
+" clip-path="url(#pb697355d52)" style="fill: url(#hdbcf48988e)"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 318.80988 113.4684 
+L 438.2262 113.4684 
+L 438.2262 103.0194 
+L 318.80988 103.0194 
+z
+" clip-path="url(#pb697355d52)" style="fill: #e7eaee"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 318.80988 113.4684 
+L 345.08147 113.4684 
+L 345.08147 103.0194 
+L 318.80988 103.0194 
+z
+" clip-path="url(#pb697355d52)" style="fill: #994455; opacity: 0.35"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 318.80988 113.4684 
+L 334.334002 113.4684 
+L 334.334002 103.0194 
+L 318.80988 103.0194 
+z
+" clip-path="url(#pb697355d52)" style="fill: url(#hdbcf48988e)"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 318.80988 130.8834 
+L 325.34046 130.8834 
+L 325.34046 126.0072 
+L 318.80988 126.0072 
+z
+" clip-path="url(#pb697355d52)" style="fill: #994455; opacity: 0.35"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 318.80988 140.6358 
+L 325.34046 140.6358 
+L 325.34046 135.7596 
+L 318.80988 135.7596 
+z
+" clip-path="url(#pb697355d52)" style="fill: url(#hdbcf48988e)"/>
    </g>
    <g id="text_21">
     <text style="font-weight: 700; font-size: 9px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="316.944" y="13.030594" transform="rotate(-0 316.944 13.030594)">(b) What citations miss</text>
    </g>
    <g id="text_22">
-    <text style="font-size: 8.5px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #626c76" x="316.944" y="24.3036" transform="rotate(-0 316.944 24.3036)">Prompt-only · 6-checkpoint mean</text>
+    <text style="font-size: 8.2px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #626c76" x="316.944" y="22.2138" transform="rotate(-0 316.944 22.2138)">Agents issuing own requests (% of tasks)</text>
    </g>
    <g id="text_23">
-    <text style="font-size: 8.5px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="318.80988" y="41.069808" transform="rotate(-0 318.80988 41.069808)">Any inadmissible access</text>
+    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="318.80988" y="42.583125" transform="rotate(-0 318.80988 42.583125)">Frontier · FHIR-AgentBench</text>
    </g>
    <g id="text_24">
-    <text style="font-weight: 700; font-size: 9px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #994455" x="452.809918" y="55.898691" transform="rotate(-0 452.809918 55.898691)">80.6%</text>
+    <text style="font-weight: 700; font-size: 8.2px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #994455" x="392.997269" y="53.252778" transform="rotate(-0 392.997269 53.252778)">37.3% / 59.0%</text>
    </g>
    <g id="text_25">
-    <text style="font-size: 8.5px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="318.80988" y="84.259008" transform="rotate(-0 318.80988 84.259008)">With fully admissible citations</text>
+    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="318.80988" y="71.143725" transform="rotate(-0 318.80988 71.143725)">Open-weight mean · FHIR-AgentBench</text>
    </g>
    <g id="text_26">
-    <text style="font-weight: 700; font-size: 9px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #994455" x="412.051635" y="99.087891" transform="rotate(-0 412.051635 99.087891)">55.2%</text>
+    <text style="font-weight: 700; font-size: 8.2px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #994455" x="393.474934" y="81.813378" transform="rotate(-0 393.474934 81.813378)">15.8% / 59.4%</text>
    </g>
    <g id="text_27">
-    <text style="font-size: 8.2px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #23272b" x="318.80988" y="128.137278" transform="rotate(-0 318.80988 128.137278)">0</text>
+    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="318.80988" y="99.704325" transform="rotate(-0 318.80988 99.704325)">Frontier · MedAgentBench</text>
    </g>
    <g id="text_28">
-    <text style="font-size: 8.2px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #23272b" x="399.04272" y="128.137278" transform="rotate(-0 399.04272 128.137278)">50</text>
+    <text style="font-weight: 700; font-size: 8.2px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #994455" x="348.81323" y="110.373978" transform="rotate(-0 348.81323 110.373978)">13.0% / 22.0%</text>
    </g>
    <g id="text_29">
-    <text style="font-size: 8.2px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #23272b" x="479.27556" y="128.137278" transform="rotate(-0 479.27556 128.137278)">100</text>
+    <text style="font-size: 7.6px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="328.13928" y="130.419816" transform="rotate(-0 328.13928 130.419816)">any out-of-scope access</text>
    </g>
    <g id="text_30">
-    <text style="font-size: 8.5px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #23272b" x="399.04272" y="141.45094" transform="rotate(-0 399.04272 141.45094)">All evaluated tasks (%)</text>
+    <text style="font-size: 7.6px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="328.13928" y="140.172216" transform="rotate(-0 328.13928 140.172216)">… with only admissible citations</text>
    </g>
   </g>
-  <g id="line2d_8">
+  <g id="line2d_4">
    <path d="M 303.1416 137.772 
 L 303.1416 18.576 
 " style="fill: none; stroke: #dee2e6; stroke-width: 0.7; stroke-linecap: square"/>
   </g>
  </g>
  <defs>
-  <clipPath id="p67cf5087e6">
+  <clipPath id="p30f58c9ed0">
    <rect x="7.668" y="6.192" width="283.716" height="139.32"/>
   </clipPath>
-  <clipPath id="p8a535f26e7">
+  <clipPath id="pb697355d52">
    <rect x="316.944" y="6.192" width="186.588" height="139.32"/>
   </clipPath>
  </defs>
  <defs>
-  <pattern id="ha21b470098" patternUnits="userSpaceOnUse" x="0" y="0" width="72" height="72">
+  <pattern id="hdbcf48988e" patternUnits="userSpaceOnUse" x="0" y="0" width="72" height="72">
    <rect x="0" y="0" width="73" height="73" fill="#994455"/>
    <path d="M -36 36 
 L 36 -36 

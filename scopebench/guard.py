@@ -87,7 +87,11 @@ def check(
     *,
     check_completeness: bool,
     skill_summary: Payload | None = None,
+    required: tuple[str, ...] | list[str] | None = None,
 ) -> GuardReport:
+    """`required` replaces the task's reference R_t in the completeness check (DEV-34: R̂_t from the declared evidence
+    plan); None keeps the reference R_t, the behaviour of every configuration before DEV-34."""
+    required_ids = task.required_ids if required is None else tuple(required)
     if parsed is None:
         return GuardReport(parseable=False)
     report = GuardReport(parseable=True)
@@ -108,10 +112,10 @@ def check(
     report.illegal_access = sorted(i for i in access_ids if i in pool and not legal(pool[i], contract))
     if check_completeness:
         if task_type.substantive(parsed):
-            report.missing_required = sorted(set(task.required_ids) - set(citations))
-        elif task.required_ids and set(task.required_ids) <= supplied_ids:
+            report.missing_required = sorted(set(required_ids) - set(citations))
+        elif required_ids and set(required_ids) <= supplied_ids:
             # abstention although every required record was supplied: the answer is available (ScopePair rule generalized)
-            report.missing_required = sorted(task.required_ids)
+            report.missing_required = sorted(required_ids)
             report.abstained_with_evidence = True
     if skill_summary is not None and task_type.skill_disagreements is not None:
         report.skill_disagreements = task_type.skill_disagreements(parsed, skill_summary, task)
@@ -140,6 +144,14 @@ REPAIR_WORDINGS: dict[str, dict[str, str]] = {
                             "listed here are permitted too and were required. Combine them, cite records by id, and resubmit the single JSON object."),
     },
 }
+
+
+# DEV-36 (experiments/SCOPEBENCH_CONTROLS_PROTOCOL.md): the second turn of `self_revise`, sent after every first answer. It
+# carries no guard result, no evidence and nothing derived from a reference — the equal-call, gold-free self-check.
+SELF_REVISE_MESSAGE = json.dumps({"instruction": (
+    "Review your previous answer against the records you were shown. Check that the answer follows from those records, that "
+    "every citation is the id of a record you were shown that supports it, and that the format is the one the task asks for. "
+    "Then return your final answer as exactly the required JSON object (unchanged if it was already right).")}, ensure_ascii=False, sort_keys=True)
 
 
 def repair_message(

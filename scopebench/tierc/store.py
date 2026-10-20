@@ -16,13 +16,13 @@ Enforcement modes:
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any
 
 from ..predicate import legal, wrong_basis
 from ..schema import Contract, EvidenceObject
-from .contracts import resource_to_evidence
+from .contracts import REFERENCE_TYPES, resource_to_evidence
 
 MODEL_VIEW_LIMIT = 8          # frozen FHIR-AgentBench setting (model_limit)
 FOCUSED_RETRIEVAL_LIMIT = 128  # frozen focused-mode retrieval_limit (broad mode returns every resource of the type)
@@ -54,13 +54,57 @@ class TaskStore:
     _evidence_cache: dict[str, EvidenceObject] = field(default_factory=dict)
     _index: dict[str, dict[str, Any]] = field(default_factory=dict)   # id -> retrieved resource (O(1); a broad call returns ~25k ids)
     _py_copies: dict[str, dict[str, Any]] = field(default_factory=dict)   # DEV-28: this episode's working copies for execute_python_code
+    _enc_periods: dict[str, tuple[str | None, str | None]] | None = None   # DEV-32: encounter id -> (start, end)
+    _referrers: dict[str, list[dict[str, Any]]] | None = None              # DEV-32: reference-resource id -> resources citing it
 
     # ----------------------------------------------------------------- legality
     def evidence(self, resource: dict[str, Any]) -> EvidenceObject:
+        """DEV-32: the same time construction as the manifest builder and the skills. A Condition without an occurrence
+        time takes its encounter's period (occurrence = start, availability = end, as `build_tierc_fhiragentbench.py`
+        and `skills.patient_pairs` do); an untimed reference resource (Medication, Patient, Location, …) takes the times
+        of a resource of the same patient that references it — the first such resource inside the contract, else the
+        earliest — so a Medication is in scope exactly when an in-scope MedicationRequest names it (the construction
+        `skills.legal_set_with_references` uses). Before DEV-32 both kinds carried no time and were dropped by every
+        pre/post contract."""
         rid = str(resource["id"])
         if rid not in self._evidence_cache:
-            self._evidence_cache[rid] = resource_to_evidence(resource, self.patient_hash)
+            e = resource_to_evidence(resource, self.patient_hash)
+            rtype = str(resource.get("resourceType"))
+            if e.occurred is None and e.available is None:
+                if rtype == "Condition":
+                    st, en = self._encounter_periods().get(_ref_id((resource.get("encounter") or {}).get("reference")), (None, None))
+                    e = replace(e, occurred=st, available=en or st, occurred_end=en)
+                elif rtype in REFERENCE_TYPES:
+                    e = self._inherit_time(e, rid)
+            self._evidence_cache[rid] = e
         return self._evidence_cache[rid]
+
+    def _patient_resources(self) -> list[dict[str, Any]]:
+        return [r for (pp, _), lst in self.store.by_patient_type.items() if pp == self.patient_fhir_id for r in lst]
+
+    def _encounter_periods(self) -> dict[str, tuple[str | None, str | None]]:
+        if self._enc_periods is None:
+            self._enc_periods = {str(r["id"]): ((r.get("period") or {}).get("start"), (r.get("period") or {}).get("end"))
+                                 for r in self.store.by_patient_type.get((self.patient_fhir_id, "Encounter"), [])}
+        return self._enc_periods
+
+    def _inherit_time(self, e: EvidenceObject, rid: str) -> EvidenceObject:
+        if self._referrers is None:
+            refs: dict[str, list[dict[str, Any]]] = {}
+            for r in self._patient_resources():
+                if str(r.get("resourceType")) in REFERENCE_TYPES:
+                    continue
+                for ref in _references(r):
+                    refs.setdefault(ref, []).append(r)
+            self._referrers = refs
+        timed = [x for x in (self.evidence(r) for r in self._referrers.get(rid, [])) if x.occurred is not None or x.available is not None]
+        if not timed:
+            return e
+        as_ref = [replace(x, id=e.id, source=e.source, row_ref=e.row_ref, fields=e.fields) for x in timed]
+        chosen = next((x for x in as_ref if legal(x, self.contract)), None)
+        if chosen is None:
+            chosen = min(as_ref, key=lambda x: (x.time("occurred") is None, x.time("occurred") or x.time("available")))
+        return chosen
 
     def effective_contract(self) -> Contract:
         return wrong_basis(self.contract) if self.enforcement == "wrong_basis" else self.contract
@@ -191,6 +235,25 @@ class TaskStore:
                         out.append(r)
                     break
         return out
+
+
+def _ref_id(ref: Any) -> str:
+    return ref.split("/")[-1] if isinstance(ref, str) else ""
+
+
+def _references(x: Any) -> list[str]:
+    """Ids of every `{"reference": "Type/id"}` inside a resource."""
+    out: list[str] = []
+    if isinstance(x, dict):
+        for k, v in x.items():
+            if k == "reference" and isinstance(v, str) and "/" in v:
+                out.append(v.split("/")[-1])
+            else:
+                out += _references(v)
+    elif isinstance(x, list):
+        for v in x:
+            out += _references(v)
+    return out
 
 
 def load_store(fhir_dir: Path):

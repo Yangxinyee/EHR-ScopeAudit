@@ -45,7 +45,7 @@ EXECUTION_SCRIPTS = {"run_config.py", "serve.sh", "run_tierb_panel.sh", "run_tie
 # Modules that take part in one tier's runs only: they are hashed by that tier's freeze and left out of the others'
 # (Tier-C development must not invalidate the Tier-B record while the Tier-B panel runs).
 TIER_ONLY_MODULES = {"C": ("tierc", "tasktypes_tierc.py"), "A": ("tiera", "tasktypes_tiera.py")}
-TIER_ONLY_SCRIPTS = {"C": ("run_tierc.py", "build_tierc_fhiragentbench.py", "run_tierc_panel.sh", "build_tierc_frontier_subsample.py",
+TIER_ONLY_SCRIPTS = {"C": ("run_tierc.py", "build_tierc_fhiragentbench.py", "run_tierc_panel.sh", "run_tierc_dev32.sh", "build_tierc_frontier_subsample.py",
                            "run_tierc_medagent.py", "build_tierc_medagentbench.py"),
                      "A": ("build_tiera.py", "ingest_ccda_duckdb.py", "run_tiera_panel.sh", "build_tiera_surrogate.py", "phi_scan.py")}
 EXECUTION_SCRIPTS |= {s for names in TIER_ONLY_SCRIPTS.values() for s in names}
@@ -67,7 +67,23 @@ def _path_label(p: Path) -> str:
     return str(p.relative_to(ROOT)) if p.is_relative_to(ROOT) else str(p)
 
 
-def build_record(tier: str, manifest: Path, protocol: Path) -> dict:
+# formal run trees per tier (Tier-A lives in the enclave: pass --runs-dir); used to state honestly whether formal
+# execution had begun when a record is (re-)issued
+RUNS_DIRS = {"B": ROOT / "experiments/scopebench_tierB_runs", "C": ROOT / "experiments/scopebench_tierC_runs"}
+
+
+def formal_runs_state(tier: str, runs_dir: Path | None) -> dict:
+    """Formal prediction files present at issue time (superseded `_*` trees excluded) and the earliest one's mtime."""
+    root = runs_dir or RUNS_DIRS.get(tier[:1])
+    if root is None or not root.exists():
+        return {"runs_dir": str(root) if root else None, "n_prediction_files": None, "earliest_mtime": None}
+    files = [f for f in root.rglob("predictions.jsonl") if not any(part.startswith("_") for part in f.relative_to(root).parts)]
+    first = min((f.stat().st_mtime for f in files), default=None)
+    return {"runs_dir": _path_label(root), "n_prediction_files": len(files),
+            "earliest_mtime": time.strftime("%Y-%m-%dT%H:%M:%S%z", time.localtime(first)) if first else None}
+
+
+def build_record(tier: str, manifest: Path, protocol: Path, runs_dir: Path | None = None) -> dict:
     if tier == "A":
         from scopebench import tasktypes_tiera  # noqa: F401  (registers outcome_count_v1 so its prompt hash is recorded)
     code = _tier_code_files(tier)
@@ -86,7 +102,9 @@ def build_record(tier: str, manifest: Path, protocol: Path) -> dict:
         "record": f"ScopeBench Tier-{tier} formal freeze",
         "tier": tier,
         "freeze_time": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-        "formal_execution_started_at_freeze": False,
+        # DEV-33: was hard-coded False, also in records re-issued after formal runs had begun
+        "formal_execution_started_at_freeze": bool(formal_runs_state(tier, runs_dir)["n_prediction_files"]),
+        "formal_runs_at_freeze": formal_runs_state(tier, runs_dir),
         "protocol": {"path": str(protocol.relative_to(ROOT)), "sha256": sha(protocol)},
         "task_manifest": {"path": _path_label(manifest / "tasks.jsonl"), "sha256": sha(manifest / "tasks.jsonl"),
                           "n_tasks": sum(1 for _ in open(manifest / "tasks.jsonl")), "construction_stats_sha256": sha(manifest / "construction_stats.json") if (manifest / "construction_stats.json").exists() else None},
@@ -111,9 +129,10 @@ def main() -> None:
     p.add_argument("--manifest", type=Path, required=True)
     p.add_argument("--protocol", type=Path, required=True)
     p.add_argument("--verify", action="store_true")
+    p.add_argument("--runs-dir", type=Path, default=None, help="formal run tree (default per tier; required for the Tier-A enclave)")
     args = p.parse_args()
     out = ROOT / f"experiments/SCOPEBENCH_TIER{args.tier}_FREEZE.json"
-    rec = build_record(args.tier, args.manifest.resolve(), args.protocol.resolve())
+    rec = build_record(args.tier, args.manifest.resolve(), args.protocol.resolve(), args.runs_dir)
     if args.verify:
         frozen = json.loads(out.read_text())
         drift = []
@@ -128,6 +147,11 @@ def main() -> None:
         changed_scripts = [f for f, h in rec["scripts"]["files"].items() if frozen["scripts"]["files"].get(f) != h]
         print(json.dumps({"drift": drift, "changed_code": changed_code, "changed_scripts": changed_scripts}, indent=1))
         sys.exit(1 if (drift or changed_code or changed_scripts) else 0)
+    if out.exists():   # DEV-33: a re-issue keeps the history of earlier issues
+        prev = json.loads(out.read_text())
+        rec["first_freeze_time"] = prev.get("first_freeze_time", prev.get("freeze_time"))
+        rec["previous_freeze_time"] = prev.get("freeze_time")
+        rec["issue_count"] = int(prev.get("issue_count", 1)) + 1
     out.write_text(json.dumps(rec, indent=1) + "\n")
     print(f"freeze written: {out} (manifest {rec['task_manifest']['n_tasks']} tasks, {rec['evidence_files']['n']} evidence files, {len(rec['framework_code']['files'])} code files)")
 
