@@ -1,6 +1,6 @@
 # Release validation
 
-Release 0.2.0 (2026-10-20) was checked on Linux with Python 3.13.12 in a
+Release 0.2.0 (2026-10-21) was checked on Linux with Python 3.13.12 in a
 new virtual environment, using only the declared `test` and `analysis`
 dependencies. The recorded package versions are in
 [`requirements/validated-cpu-py313.txt`](../requirements/validated-cpu-py313.txt).

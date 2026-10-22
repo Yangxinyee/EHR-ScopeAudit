@@ -6,7 +6,7 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2026-10-20T17:37:30.597901</dc:date>
+    <dc:date>2026-10-21T19:49:03.348524</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -267,16 +267,16 @@ z
    </g>
    <g id="patch_14">
     <path d="M 318.80988 113.4684 
-L 345.08147 113.4684 
-L 345.08147 103.0194 
+L 403.953716 113.4684 
+L 403.953716 103.0194 
 L 318.80988 103.0194 
 z
 " clip-path="url(#pb697355d52)" style="fill: #994455; opacity: 0.35"/>
    </g>
    <g id="patch_15">
     <path d="M 318.80988 113.4684 
-L 334.334002 113.4684 
-L 334.334002 103.0194 
+L 364.188082 113.4684 
+L 364.188082 103.0194 
 L 318.80988 103.0194 
 z
 " clip-path="url(#pb697355d52)" style="fill: url(#hdbcf48988e)"/>
@@ -316,10 +316,10 @@ z
     <text style="font-weight: 700; font-size: 8.2px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #994455" x="393.474934" y="81.813378" transform="rotate(-0 393.474934 81.813378)">15.8% / 59.4%</text>
    </g>
    <g id="text_27">
-    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="318.80988" y="99.704325" transform="rotate(-0 318.80988 99.704325)">Frontier · MedAgentBench</text>
+    <text style="font-size: 8px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="318.80988" y="99.704325" transform="rotate(-0 318.80988 99.704325)">Open-weight ReAct · MIMIC-IV</text>
    </g>
    <g id="text_28">
-    <text style="font-weight: 700; font-size: 8.2px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #994455" x="348.81323" y="110.373978" transform="rotate(-0 348.81323 110.373978)">13.0% / 22.0%</text>
+    <text style="font-weight: 700; font-size: 8.2px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #994455" x="407.685476" y="110.373978" transform="rotate(-0 407.685476 110.373978)">38.0% / 71.3%</text>
    </g>
    <g id="text_29">
     <text style="font-size: 7.6px; font-family: 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #23272b" x="328.13928" y="130.419816" transform="rotate(-0 328.13928 130.419816)">any out-of-scope access</text>

@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 (2026-10-20, prepared; not yet published)
+## 0.2.0 (2026-10-21)
 
 Code
 - Evidence plans: a model declares the operation and evidence it needs; the auditor executes the plan on the

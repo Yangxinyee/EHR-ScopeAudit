@@ -1,16 +1,16 @@
 {
   "artifact_id": "fig:scope_teaser",
   "source_data": "results/paper/macros.json",
-  "source_sha256": "55262dfe392f21ef5e82ce618c6b5d61cba603252cc027530a3c7ecb13d364aa",
+  "source_sha256": "71e3cd39fe9b95c85dc2e03e95f9c0b07eeeb51dd307300a1fe4c7243336f7dd",
   "palette_sha256": "5dae639754dbb8f56591b96862ff08e4560a97459391ae3709b93ded8ea95c69",
-  "generator_sha256": "f65444b14163653f5b2c1df3406d78eb3aa6e4c98fb8e9aaf691d71e3035835c",
+  "generator_sha256": "489f892e285dd42ec3c5fcf14d5fd4bb63b0257a2fc888e232767350594293bd",
   "values": {
     "AH.F.fhir.exposed": 59.0,
     "AH.F.fhir.hidden": 37.3,
     "AH.open.fhir.exposed": 59.4,
     "AH.open.fhir.hidden": 15.8,
-    "AH.F.med.exposed": 22.0,
-    "AH.F.med.hidden": 13.0
+    "AH.B.react.exposed": 71.3,
+    "AH.B.react.hidden": 38.0
   },
   "transformation": "Read rounded checkpoint means from frozen manuscript macros; no reanalysis.",
   "caption_claim": "Admissible citations can conceal inadmissible access.",

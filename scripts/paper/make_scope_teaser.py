@@ -31,7 +31,7 @@ def main() -> None:
     palette = json.loads(palette_path.read_text())
     # ICML revision §3.1: agents that issue their own requests (no scope enforcement), all-task denominators
     rows = [(f"Frontier · FHIR-AgentBench", "AH.F.fhir"), (f"Open-weight mean · FHIR-AgentBench", "AH.open.fhir"),
-            (f"Frontier · MedAgentBench", "AH.F.med")]
+            (f"Open-weight ReAct · MIMIC-IV", "AH.B.react")]   # DEV-38: MedAgentBench agents stay in scope (AH.F.med, AH.open.med ≈ 0)
     rates = [(label, float(values[f"{k}.exposed"]), float(values[f"{k}.hidden"])) for label, k in rows]
     for _, exposed, hidden in rates:
         if not 0 <= hidden <= exposed <= 100:
